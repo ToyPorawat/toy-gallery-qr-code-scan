@@ -531,9 +531,11 @@ function renderHeader() {
     $('album-title').textContent = a ? a.name : 'No album yet';
     document.title = a ? `${a.name} · Toy Gallery` : "Toy Gallery 2000's";
     
-    // ชี้ไปที่ไฟล์รูปภาพ QR Code ที่คุณเตรียมไว้
-    $('qr-img').src = 'https://drive.google.com/file/d/1cWV2-kSCt-lIK1msIRKK3H5DcQEO7YNO/view?usp=drive_link'; 
-    // หรือใส่ URL ของรูปภาพตรงๆ เช่น 'https://.../my-qr.jpg'
+    // 🚨 1. นำ File ID ของรูป QR Code ใน Google Drive มาใส่ในเครื่องหมายคำพูดด้านล่าง
+    const qrCodeFileId = "1cWV2-kSCt-lIK1msIRKK3H5DcQEO7YNO"; 
+    
+    // 2. ระบบจะดึงรูปจาก Drive มาแสดง (w400 คือการกำหนดขนาดความกว้างให้โหลดไวขึ้น)
+    $('qr-img').src = `https://lh3.googleusercontent.com/d/${qrCodeFileId}=w400`;
 }
 
 function setStatus(text, state) {
