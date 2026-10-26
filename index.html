@@ -384,7 +384,7 @@ tailwind.config = {
 <script>
 /* -------------------- CONFIG -------------------- */
 const CONFIG = {
-    GAS_API_URL: "https://script.google.com/macros/s/AKfycbxA4iUSvYhY_M4Kiu6y1wkUEhbEE66C7V0JlO9ceXiUf9oGb-B-7e-cO99E3mrmJaKrqw/exec",
+    GAS_API_URL: "https://script.google.com/macros/s/AKfycbwpBEtJ2-VS0rtzRDyR50pJ32awu1q743Cv_ID4bBExm2uMFRUltCd7x1dTs5vT4rDZ/exec",
     REFRESH_MS: 5000,
     SESSION_HOURS: 8,
     DOWNLOAD_CONCURRENCY: 4,
@@ -435,70 +435,28 @@ const loadedSet = new Set();
 const DEFAULT_LABELS = {};
 const SKELETON = '<div class="aspect-[4/5] rounded-xl shimmer"></div>'.repeat(4);
 
-// โหลดรายการอัลบั้มจาก Server ส่วนกลาง (GAS)
-async function loadAlbumsFromCloud() {
-    if (DEMO_MODE) {
-        albums = [
-            { id: 1, name: "Toy Gallery 2000's", folderId: "demo-folder", isActive: true }
-        ];
-        renderHeader();
-        fetchPhotos();
-        if (typeof renderAlbums === 'function') renderAlbums();
-        return;
-    }
-
+function loadAlbums() {
+    let list = null;
     try {
-        const res = await fetch(`${CONFIG.GAS_API_URL}?action=getAlbums&t=${Date.now()}`);
-        const json = await res.json();
-        if (json.success && Array.isArray(json.albums)) {
-            albums = json.albums;
-        }
-    } catch (e) {
-        console.error("Failed to load albums from cloud, using fallback", e);
-    }
+        const saved = JSON.parse(localStorage.getItem('tg_albums'));
+        if (Array.isArray(saved)) list = saved;
+    } catch (e) {}
 
-    // ถ้าไม่มีข้อมูลเลย ให้ใช้อัลบั้มเริ่มต้น
-    if (!albums.length) {
+    // เครื่องที่ยังไม่เคยตั้งค่า ใช้อัลบั้มเริ่มต้นจาก CONFIG (ถ้ามี)
+    if (list === null) {
         const d = CONFIG.DEFAULT_ALBUM;
-        albums = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
+        list = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
     }
 
-    // ตรวจสอบให้มี Live ได้แค่ 1 อัน
+    // ให้มีอัลบั้ม Live ได้แค่ 1 อัน
     let found = false;
-    albums.forEach(a => {
+    list.forEach(a => {
         a.isActive = !!a.isActive && !found;
         if (a.isActive) found = true;
     });
-
-    renderHeader();
-    fetchPhotos();
-    if (typeof renderAlbums === 'function') renderAlbums();
+    return list;
 }
-
-// บันทึกรายการอัลบั้มขึ้น Server ส่วนกลาง (GAS)
-async function saveAlbumsToCloud() {
-    saveAlbumsLocally(); // สำรองไว้ในเครื่องตัวเองด้วย
-    if (DEMO_MODE) return;
-
-    try {
-        await fetch(CONFIG.GAS_API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'saveAlbums', albums: albums })
-        });
-    } catch (e) {
-        console.error("Failed to save albums to cloud", e);
-        toast('Warning: Could not sync changes to cloud');
-    }
-}
-
-function loadAlbumsLocally() {
-    try {
-        const saved = JSON.parse(localStorage.getItem('tg_albums'));
-        if (Array.isArray(saved)) return saved;
-    } catch (e) {}
-    return null;
-}
-function saveAlbumsLocally() { localStorage.setItem('tg_albums', JSON.stringify(albums)); }
+function saveAlbums() { localStorage.setItem('tg_albums', JSON.stringify(albums)); }
 const activeAlbum = () => albums.find(a => a.isActive);
 
 // ล้างรูปของอัลบั้มเดิมทั้งหมด ทุกครั้งที่เปลี่ยนอัลบั้ม Live
