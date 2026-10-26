@@ -22,9 +22,14 @@ tailwind.config = {
     }}
 }
 </script>
+<!-- JSZip & FontAwesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK (Compat Version) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <style type="text/tailwindcss">
     .btn-primary { @apply inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-clay text-cream text-[13px] font-medium tracking-wide hover:bg-clay-dark active:scale-[.97] transition duration-300 shadow-[0_8px_24px_-12px_rgba(110,83,57,.7)] disabled:opacity-50 disabled:pointer-events-none; }
@@ -42,17 +47,14 @@ tailwind.config = {
     :root { --ease: cubic-bezier(.22,.8,.24,1); }
     body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
 
-    /* Page entrance */
     .rise { animation: rise 1s var(--ease) both; animation-delay: var(--d, 0ms); }
     @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     .fade-in { animation: fadeIn .5s var(--ease) both; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Gallery tiles */
     .tile { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
     .tile.in { opacity: 1; transform: none; }
-    .tile img { opacity: 0; transform: scale(1.08); filter: blur(10px);
-        transition: opacity .8s var(--ease), transform 1.4s var(--ease), filter .9s var(--ease), border-radius .4s var(--ease); }
+    .tile img { opacity: 0; transform: scale(1.08); filter: blur(10px); transition: opacity .8s var(--ease), transform 1.4s var(--ease), filter .9s var(--ease), border-radius .4s var(--ease); }
     .tile img.loaded { opacity: 1; transform: scale(1); filter: none; }
     .tile-shade { opacity: 0; transition: opacity .5s var(--ease); }
     @media (hover: hover) {
@@ -63,7 +65,6 @@ tailwind.config = {
     }
     .tile-dl { transition: opacity .4s var(--ease), transform .4s var(--ease), background .3s; }
 
-    /* Selection */
     .tile-check { opacity: 0; transform: scale(.5); transition: all .35s var(--ease); }
     .selecting .tile-check { opacity: 1; transform: scale(1); }
     .selecting .tile-dl, .selecting .tile-shade { display: none; }
@@ -71,19 +72,16 @@ tailwind.config = {
     .tile.selected .tile-check { background: #8c6b4a; border-color: #8c6b4a; color: #fff; }
     .tile.selected { background: #efe5d8; }
 
-    /* Shimmer */
     .shimmer { background: linear-gradient(100deg, #f3ece2 30%, #fbf8f3 50%, #f3ece2 70%); background-size: 220% 100%; animation: shimmer 1.6s linear infinite; transition: opacity .6s; }
     .shimmer.done { animation: none; opacity: 0; }
     @keyframes shimmer { to { background-position: -220% 0; } }
 
-    /* Lightbox */
     #lightbox { opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility .45s; }
     #lightbox.open { opacity: 1; visibility: visible; }
     #lb-img { transition: opacity .35s var(--ease), transform .6s var(--ease); }
     #lightbox:not(.open) #lb-img { transform: scale(.94); }
     #lb-img.swap { opacity: 0; transform: scale(.97); }
 
-    /* Action bar & sheet */
     #action-bar { transform: translateY(140%); transition: transform .55s var(--ease); }
     #action-bar.show { transform: none; }
     .sheet { opacity: 0; visibility: hidden; transition: opacity .35s var(--ease), visibility .35s; }
@@ -91,7 +89,6 @@ tailwind.config = {
     .sheet-panel { transform: translateY(40px); transition: transform .5s var(--ease); }
     .sheet.open .sheet-panel { transform: none; }
 
-    /* Camera */
     .face-guide { border: 1.5px dashed rgba(250,247,242,.9); border-radius: 50%; box-shadow: 0 0 0 9999px rgba(58,46,36,.5); animation: breathe 2.6s var(--ease) infinite; }
     @keyframes breathe { 50% { transform: scale(1.025); border-color: rgba(201,173,140,1); } }
 
@@ -107,7 +104,6 @@ tailwind.config = {
 
 <body class="font-serif bg-cream text-ink min-h-screen">
 
-<!-- Top progress bar -->
 <div id="progress" class="fixed top-0 left-0 h-[2px] bg-clay z-[90] transition-all duration-500 opacity-0" style="width:0"></div>
 
 <!-- ============================== GUEST ============================== -->
@@ -388,15 +384,33 @@ const CONFIG = {
     REFRESH_MS: 5000,
     SESSION_HOURS: 8,
     DOWNLOAD_CONCURRENCY: 4,
-    // อัลบั้มเริ่มต้นสำหรับเครื่องที่ยังไม่เคยตั้งค่า (เช่น มือถือแขก) เว้นว่าง folderId ไว้ถ้าไม่ต้องการ
     DEFAULT_ALBUM: { name: "Toy Gallery 2000's", folderId: "" },
-    // passwordHash = SHA-256 of the password. Generate in console: hashPassword('your-password')
+    // ⚙️ นำคอนฟิกจาก Firebase Console มาวางตรงนี้
+    FIREBASE_CONFIG: {
+         apiKey: "AIzaSyC74s9gciHx68bAPNDue25wMCAhLiau8C0",
+         authDomain: "toy-gallery-2000s-4ea89.firebaseapp.com",
+         projectId: "toy-gallery-2000s-4ea89",
+         storageBucket: "toy-gallery-2000s-4ea89.firebasestorage.app",
+         messagingSenderId: "712072738636",
+         appId: "1:712072738636:web:26cf6c0200fc1ddcc641e9",
+         measurementId: "G-S7JX8BPJS6"
+    },
     ADMIN_ACCOUNTS: [
-        { email: "admin@toygallery.com", passwordHash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" } // demo: admin
+        { email: "admin@toygallery.com", passwordHash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" } // demo pw: admin
     ]
 };
+
 const DEMO_MODE = !CONFIG.GAS_API_URL || CONFIG.GAS_API_URL.includes('xxxx');
 const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
+let db = null;
+
+// Initialize Firebase if configured
+if (CONFIG.FIREBASE_CONFIG && CONFIG.FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
+    try {
+        firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+        db = firebase.database();
+    } catch(e) { console.error("Firebase Init Error:", e); }
+}
 
 /* -------------------- HELPERS -------------------- */
 const $ = id => document.getElementById(id);
@@ -416,7 +430,7 @@ function toast(msg) {
 }
 
 /* -------------------- STATE -------------------- */
-let albums = loadAlbums();
+let albums = [];
 let photos = [];
 let lastSignature = null;
 let lastSync = null;
@@ -435,20 +449,37 @@ const loadedSet = new Set();
 const DEFAULT_LABELS = {};
 const SKELETON = '<div class="aspect-[4/5] rounded-xl shimmer"></div>'.repeat(4);
 
-function loadAlbums() {
+// Sync Firebase Data
+function initFirebaseRealtimeSync() {
+    if (!db) {
+        albums = loadLocalAlbums();
+        return;
+    }
+    db.ref('albums').on('value', snapshot => {
+        const data = snapshot.val();
+        if (data) {
+            albums = Array.isArray(data) ? data : Object.values(data);
+        } else {
+            const d = CONFIG.DEFAULT_ALBUM;
+            albums = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
+        }
+        resetGallery();
+        if (!$('app-admin').classList.contains('hidden')) renderAlbums();
+    });
+}
+
+function loadLocalAlbums() {
     let list = null;
     try {
         const saved = JSON.parse(localStorage.getItem('tg_albums'));
         if (Array.isArray(saved)) list = saved;
     } catch (e) {}
 
-    // เครื่องที่ยังไม่เคยตั้งค่า ใช้อัลบั้มเริ่มต้นจาก CONFIG (ถ้ามี)
     if (list === null) {
         const d = CONFIG.DEFAULT_ALBUM;
         list = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
     }
 
-    // ให้มีอัลบั้ม Live ได้แค่ 1 อัน
     let found = false;
     list.forEach(a => {
         a.isActive = !!a.isActive && !found;
@@ -456,10 +487,17 @@ function loadAlbums() {
     });
     return list;
 }
-function saveAlbums() { localStorage.setItem('tg_albums', JSON.stringify(albums)); }
+
+function saveAlbums() {
+    if (db) {
+        db.ref('albums').set(albums);
+    } else {
+        localStorage.setItem('tg_albums', JSON.stringify(albums));
+    }
+}
+
 const activeAlbum = () => albums.find(a => a.isActive);
 
-// ล้างรูปของอัลบั้มเดิมทั้งหมด ทุกครั้งที่เปลี่ยนอัลบั้ม Live
 function resetGallery() {
     fetchSeq++;
     photos = [];
@@ -474,6 +512,7 @@ function resetGallery() {
     $('photo-count').textContent = '';
     $('btn-select').disabled = true;
     renderHeader();
+    fetchPhotos();
 }
 
 /* -------------------- VIEWS -------------------- */
@@ -542,7 +581,6 @@ async function fetchPhotos() {
         const res = await fetch(`${CONFIG.GAS_API_URL}?folderId=${encodeURIComponent(a.folderId)}&t=${Date.now()}`);
         const json = await res.json();
 
-        // ถ้าระหว่างรอ แอดมินเปลี่ยนอัลบั้ม Live ไปแล้ว ให้ทิ้งผลลัพธ์นี้
         if (seq !== fetchSeq || activeAlbum()?.folderId !== a.folderId) return;
 
         if (!json.success) throw new Error(json.message || 'API error');
@@ -903,7 +941,7 @@ function capture() {
     renderResults();
 }
 function renderResults() {
-    resultList = photos.slice(0, 6); // demo: replace with real face-matching results
+    resultList = photos.slice(0, 6);
     $('btn-dl-results').classList.toggle('hidden', !resultList.length);
     const grid = $('result-grid');
     grid.innerHTML = resultList.length
@@ -1018,11 +1056,9 @@ $('album-form').addEventListener('submit', e => {
     if (!/^[a-zA-Z0-9_-]{10,}$/.test(folderId)) return toast('Invalid folder ID');
     if (albums.some(a => a.folderId === folderId)) return toast('This folder already exists');
 
-    // ลิงก์ใหม่ขึ้นเป็น Live ทันที อัลบั้มอื่นหยุดแสดงทั้งหมด
     albums.forEach(a => a.isActive = false);
     albums.push({ id: Date.now(), name, folderId, isActive: true });
     saveAlbums();
-    resetGallery();
 
     $('album-name').value = '';
     $('album-folder').value = '';
@@ -1033,7 +1069,6 @@ $('album-form').addEventListener('submit', e => {
 function setActiveAlbum(id) {
     albums.forEach(a => a.isActive = a.id === id);
     saveAlbums();
-    resetGallery();
     renderAlbums();
     toast('Live album updated');
 }
@@ -1043,11 +1078,7 @@ function deleteAlbum(id) {
     const wasActive = albums.find(a => a.id === id)?.isActive;
     albums = albums.filter(a => a.id !== id);
     saveAlbums();
-    // ไม่ตั้งอัลบั้มอื่นเป็น Live ให้เอง แอดมินต้องเลือกเอง
-    if (wasActive) {
-        resetGallery();
-        toast('Live album removed');
-    }
+    if (wasActive) resetGallery();
     renderAlbums();
 }
 
@@ -1083,6 +1114,7 @@ function renderStats() {
 /* -------------------- INIT -------------------- */
 window.addEventListener('DOMContentLoaded', () => {
     ['dl-btn', 'lb-download', 'btn-dl-results'].forEach(id => DEFAULT_LABELS[id] = $(id).innerHTML);
+    initFirebaseRealtimeSync();
     renderHeader();
     showView('view-gallery');
 });
