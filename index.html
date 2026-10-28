@@ -7,6 +7,26 @@
 <title>Toy Gallery 2000's</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script>
+    const FIREBASE_CONFIG = {
+        apiKey: "***************************************",
+        authDomain: "toy-gallery-2000s-4ea89.firebaseapp.com",
+        databaseURL: "https://toy-gallery-2000s-4ea89-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "toy-gallery-2000s-4ea89",
+        storageBucket: "toy-gallery-2000s-4ea89.firebasestorage.app",
+        messagingSenderId: "712072738636",
+        appId: "1:712072738636:web:26cf6c0200fc1ddcc641e9",
+        measurementId: "G-S7JX8BPJS6"
+    };
+    firebase.initializeApp(FIREBASE_CONFIG);
+</script>
+
 <script>
 tailwind.config = {
     theme: { extend: {
@@ -45,6 +65,7 @@ tailwind.config = {
     .chip-sage   { @apply bg-sage-light border-sage/30 text-sage-dark; }
     .admin-tab   { @apply flex items-center gap-3 px-4 h-11 rounded-2xl text-sm text-muted hover:text-ink hover:bg-sand/80 transition whitespace-nowrap; }
     .admin-tab.active { @apply bg-ink text-cream shadow-md hover:bg-ink hover:text-cream; }
+    .drop-zone   { @apply border-2 border-dashed border-line rounded-3xl p-6 text-center text-sm text-muted hover:border-clay/50 hover:bg-white/60 transition cursor-pointer; }
 </style>
 
 <style>
@@ -311,7 +332,7 @@ tailwind.config = {
 <!-- ============================== ADMIN ============================== -->
 <div id="app-admin" class="hidden min-h-screen">
 
-    <!-- AUTH (Sign in / First-time setup) -->
+    <!-- AUTH -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-sm rise">
             <div class="text-center mb-8">
@@ -333,7 +354,7 @@ tailwind.config = {
                 </div>
                 <div>
                     <label for="auth-email" class="label">Email</label>
-                    <input id="auth-email" type="email" autocomplete="username" placeholder="you@example.com" class="input">
+                    <input id="auth-email" type="email" autocomplete="username" placeholder="***@*******.***" class="input">
                 </div>
                 <div>
                     <label for="auth-password" class="label">Password</label>
@@ -345,8 +366,10 @@ tailwind.config = {
                 <p id="auth-error" class="hidden text-xs text-[#a3473b] bg-[#fbecea] border border-[#f3d3cd] rounded-2xl px-3 py-2.5"></p>
                 <button id="auth-btn" type="submit" class="btn-primary w-full h-12">Sign in</button>
             </form>
-            <p id="auth-hint" class="text-center text-xs text-muted mt-5">Need an account? Ask the gallery owner to create one for you.</p>
-            <button onclick="exitAdmin(false)" class="w-full mt-4 text-sm text-muted hover:text-ink transition"><i class="fa-solid fa-arrow-left text-xs mr-1"></i> Back to gallery</button>
+            <div class="text-center mt-5 space-y-2">
+                <button id="auth-toggle" type="button" class="text-xs text-muted hover:text-ink transition underline underline-offset-4">First time? Create owner account</button>
+                <button onclick="exitAdmin(false)" class="block w-full text-sm text-muted hover:text-ink transition"><i class="fa-solid fa-arrow-left text-xs mr-1"></i> Back to gallery</button>
+            </div>
         </div>
     </div>
 
@@ -365,7 +388,7 @@ tailwind.config = {
                 <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab w-full"><i class="fa-solid fa-chart-simple w-4"></i> Overview</button>
                 <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab w-full"><i class="fa-regular fa-folder w-4"></i> Albums</button>
                 <button data-tab="account" onclick="switchTab('account')" class="admin-tab w-full"><i class="fa-regular fa-user w-4"></i> Account</button>
-                <button data-tab="users" data-owner onclick="switchTab('users')" class="admin-tab w-full"><i class="fa-solid fa-user-group w-4"></i> Users</button>
+                <button data-tab="users" data-owner onclick="switchTab('users')" class="admin-tab w-full hidden"><i class="fa-solid fa-user-group w-4"></i> Users</button>
             </nav>
             <div class="p-3 border-t border-line space-y-1">
                 <div class="flex items-center gap-3 px-3 py-2">
@@ -394,7 +417,7 @@ tailwind.config = {
                     <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab h-10"><i class="fa-solid fa-chart-simple"></i> Overview</button>
                     <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab h-10"><i class="fa-regular fa-folder"></i> Albums</button>
                     <button data-tab="account" onclick="switchTab('account')" class="admin-tab h-10"><i class="fa-regular fa-user"></i> Account</button>
-                    <button data-tab="users" data-owner onclick="switchTab('users')" class="admin-tab h-10"><i class="fa-solid fa-user-group"></i> Users</button>
+                    <button data-tab="users" data-owner onclick="switchTab('users')" class="admin-tab h-10 hidden"><i class="fa-solid fa-user-group"></i> Users</button>
                 </nav>
             </header>
 
@@ -423,14 +446,13 @@ tailwind.config = {
                 <section id="tab-albums" class="admin-section hidden space-y-6">
                     <div class="card p-6 sm:p-8 rise">
                         <div class="flex flex-wrap items-center justify-between gap-3">
-                            <h3 class="font-display text-2xl">Add Google Drive folder</h3>
-                            <span class="chip chip-sage"><i class="fa-solid fa-cloud"></i> Synced to all devices</span>
+                            <h3 class="font-display text-2xl">Create album</h3>
+                            <span class="chip chip-sage"><i class="fa-solid fa-bolt"></i> Real-time sync</span>
                         </div>
-                        <p class="text-xs text-muted mt-2 mb-5">Paste the full folder link or just the folder ID. New folders go live immediately and replace your current album. The folder must be shared as "Anyone with the link".</p>
-                        <form id="album-form" class="grid sm:grid-cols-[1fr_1fr_auto] gap-3" novalidate>
+                        <p class="text-xs text-muted mt-2 mb-5">Create an album first, then upload photos. New albums go live immediately.</p>
+                        <form id="album-form" class="grid sm:grid-cols-[1fr_auto] gap-3" novalidate>
                             <input id="album-name" type="text" placeholder="Album name" class="input">
-                            <input id="album-folder" type="text" placeholder="Folder link or ID" class="input font-mono text-xs">
-                            <button id="album-btn" type="submit" class="btn-primary h-12"><i class="fa-solid fa-plus text-xs"></i> Add</button>
+                            <button id="album-btn" type="submit" class="btn-primary h-12"><i class="fa-solid fa-plus text-xs"></i> Create</button>
                         </form>
                     </div>
                     <div class="card overflow-hidden rise" style="--d:80ms">
@@ -506,29 +528,14 @@ tailwind.config = {
 <!-- ============================== SCRIPT ============================== -->
 <script>
 /* -------------------- CONFIG -------------------- */
-const CONFIG = {
-    GAS_API_URL: "https://script.google.com/macros/s/AKfycbwSwZiwmvy_CJU6cLd0TllmqXK5yYOrheN6jzAgEgzlm-fe6k7cjK_QkQdKifDYsdAZUQ/exec",
-    REFRESH_MS: 5000,
-    SESSION_HOURS: 8,
-    DOWNLOAD_CONCURRENCY: 4,
-    DEFAULT_ALBUM: { name: "Toy Gallery 2000's", folderId: "" },
-    // ⚙️ นำคอนฟิกจาก Firebase Console มาวางตรงนี้
-    FIREBASE_CONFIG: {
-         apiKey: "AIzaSyC74s9gciHx68bAPNDue25wMCAhLiau8C0",
-         authDomain: "toy-gallery-2000s-4ea89.firebaseapp.com",
-         databaseURL: "https://toy-gallery-2000s-4ea89-default-rtdb.asia-southeast1.firebasedatabase.app/",
-         projectId: "toy-gallery-2000s-4ea89",
-         storageBucket: "toy-gallery-2000s-4ea89.firebasestorage.app",
-         messagingSenderId: "712072738636",
-         appId: "1:712072738636:web:26cf6c0200fc1ddcc641e9",
-         measurementId: "G-S7JX8BPJS6"
-    },
-    ADMIN_ACCOUNTS: [
-        { email: "admin@toygallery.com", passwordHash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" } // demo pw: admin
-    ]
-};
+const CONFIG = { REFRESH_MS: 5000, DOWNLOAD_CONCURRENCY: 4 };
 const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
-const SESSION_KEY = 'tg_session_v2';
+const SESSION_KEY = 'tg_session_v3';
+
+/* Firebase refs */
+const auth = firebase.auth();
+const db = firebase.database();
+const storage = firebase.storage();
 
 /* -------------------- HELPERS -------------------- */
 const $ = id => document.getElementById(id);
@@ -571,34 +578,10 @@ function togglePw(id, btn) {
     btn.querySelector('i').className = `fa-regular ${show ? 'fa-eye-slash' : 'fa-eye'} text-xs`;
 }
 
-/* -------------------- API -------------------- */
-async function apiGet(params) {
-    const qs = new URLSearchParams({ ...params, t: Date.now() });
-    const res = await fetch(`${CONFIG.GAS_API_URL}?${qs}`);
-    const j = await res.json();
-    if (!j.success) throw new Error(j.message || 'Request failed');
-    return j;
-}
-async function apiPost(action, payload = {}) {
-    const res = await fetch(CONFIG.GAS_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // ไม่ต้องผ่าน CORS preflight
-        body: JSON.stringify({ action, token: session?.token || '', ...payload })
-    });
-    const j = await res.json();
-    if (!j.success) {
-        if (j.message === 'SESSION_EXPIRED') {
-            clearSession();
-            if (!$('app-admin').classList.contains('hidden')) showAuth();
-            throw new Error('Session expired. Please sign in again.');
-        }
-        throw new Error(j.message || 'Request failed');
-    }
-    return j;
-}
-
 /* -------------------- SESSION -------------------- */
 let session = loadSession();
+let ownerPasswordCache = null; // ใช้ชั่วครั้งเดียวตอน owner สร้าง account ใหม่
+
 function loadSession() {
     try {
         const s = JSON.parse(localStorage.getItem(SESSION_KEY));
@@ -607,17 +590,18 @@ function loadSession() {
     localStorage.removeItem(SESSION_KEY);
     return null;
 }
-function saveSession(j) {
-    session = { token: j.token, user: j.user, exp: Date.now() + (j.expiresIn || 21600) * 1000 - 60000 };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+function saveSession(s) {
+    session = s;
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ ...s, exp: Date.now() + 7 * 24 * 3600 * 1000 }));
 }
 function clearSession() { session = null; localStorage.removeItem(SESSION_KEY); }
-const isOwner = () => session?.user?.role === 'owner';
+const isOwner = () => session?.role === 'owner';
 
 /* -------------------- GUEST STATE -------------------- */
 let gallerySlug = new URLSearchParams(location.search).get('g') || '';
-let gallery = null, liveAlbum = null, liveAlbumId, galleryMissing = false;
-let photos = [], lastSignature = null, lastSync = null, pollTimer = null, initialized = false, fetchSeq = 0;
+let gallery = null, liveAlbum = null, galleryMissing = false;
+let photos = [], lastSignature = null, initialized = false, fetchSeq = 0;
+let galleryRef = null; // onSnapshot ref
 let stream = null, lbIndex = 0, selecting = false, busy = false, readyFiles = [], resultList = [];
 const selected = new Set(), revealed = new Set(), loadedSet = new Set();
 const DEFAULT_LABELS = {};
@@ -637,7 +621,7 @@ function clearGalleryState() {
 function resetGallery() {
     fetchSeq++;
     clearGalleryState();
-    gallery = null; liveAlbum = null; liveAlbumId = undefined; galleryMissing = false; lastSync = null;
+    gallery = null; liveAlbum = null; galleryMissing = false;
     $('gallery-grid').innerHTML = SKELETON;
     $('photo-count').classList.add('hidden');
     $('btn-select').disabled = true;
@@ -650,7 +634,7 @@ function showView(id) {
     $(id).classList.remove('hidden');
     if (id !== 'view-gallery') setSelectMode(false);
     id === 'view-scan' ? startCamera() : stopCamera();
-    id === 'view-gallery' ? startPolling() : stopPolling();
+    id === 'view-gallery' ? subscribeGallery() : unsubscribeGallery();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -670,49 +654,40 @@ function setStatus(text, state) {
     $('sync-ping').className = `absolute inline-flex w-full h-full rounded-full ${c} ${state === 'live' ? 'animate-ping opacity-60' : 'opacity-0'}`;
 }
 
-/* -------------------- DATA -------------------- */
-function startPolling() {
-    fetchPhotos();
-    clearInterval(pollTimer);
-    pollTimer = setInterval(fetchPhotos, CONFIG.REFRESH_MS);
-}
-function stopPolling() { clearInterval(pollTimer); pollTimer = null; }
-
-async function fetchPhotos() {
-    const seq = fetchSeq;
-    try {
-        const j = await apiGet({ action: 'live', g: gallerySlug });
+/* -------------------- GALLERY REALTIME -------------------- */
+function subscribeGallery() {
+    unsubscribeGallery();
+    const seq = ++fetchSeq;
+    const ref = db.ref(`galleries/${gallerySlug || '_'}`);
+    galleryRef = ref;
+    ref.on('value', snap => {
         if (seq !== fetchSeq) return;
-
-        galleryMissing = false;
-        gallery = j.gallery;
-        // ใส่ ?g= ลงใน URL เพื่อให้แชร์ลิงก์ได้ถูกแกลเลอรี
-        if (gallery && gallerySlug !== gallery.slug) {
-            gallerySlug = gallery.slug;
-            history.replaceState(null, '', galleryUrl(gallerySlug));
-        }
-        const albumId = j.album ? j.album.id : null;
-        if (albumId !== liveAlbumId) { clearGalleryState(); liveAlbumId = albumId; }
-        liveAlbum = j.album;
-        renderHeader();
-
-        if (!liveAlbum) { applyPhotos([]); setStatus('Waiting for the host', 'idle'); return; }
-        if (j.error) { applyPhotos([]); setStatus(j.error, 'error'); return; }
-        applyPhotos(Array.isArray(j.data) ? j.data : []);
-        lastSync = new Date();
-        setStatus(`Live · Updated ${lastSync.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`, 'live');
-    } catch (err) {
-        if (seq !== fetchSeq) return;
-        console.error(err);
-        if (err.message === 'GALLERY_NOT_FOUND') {
-            galleryMissing = true; gallery = null; liveAlbum = null;
-            renderHeader(); applyPhotos([]);
-            setStatus('Gallery not found', 'error');
+        const data = snap.val();
+        if (!data || !gallerySlug) {
+            galleryMissing = !!gallerySlug;
+            gallery = null; liveAlbum = null;
+            renderHeader();
+            applyPhotos([]);
+            setStatus(gallerySlug ? 'Gallery not found' : 'Waiting for the host', gallerySlug ? 'error' : 'idle');
             return;
         }
+        galleryMissing = false;
+        gallery = { name: data.name, slug: gallerySlug };
+        liveAlbum = data.albumId ? { id: data.albumId, name: data.albumName } : null;
+        renderHeader();
+        if (!liveAlbum) { applyPhotos([]); setStatus('Waiting for the host', 'idle'); return; }
+        const list = data.photos ? Object.entries(data.photos)
+            .map(([id, p]) => ({ id, ...p }))
+            .sort((a, b) => (b.created || 0) - (a.created || 0)) : [];
+        applyPhotos(list);
+        setStatus(`Live · ${list.length} ${list.length === 1 ? 'photo' : 'photos'}`, 'live');
+    }, err => {
+        console.error(err);
         setStatus('Connection lost · Retrying…', 'error');
-        if (lastSignature === null) applyPhotos([]);
-    }
+    });
+}
+function unsubscribeGallery() {
+    if (galleryRef) { galleryRef.off('value'); galleryRef = null; }
 }
 
 function applyPhotos(list) {
@@ -865,14 +840,13 @@ window.addEventListener('scroll', updateToTop, { passive: true });
 
 /* -------------------- DOWNLOAD ENGINE -------------------- */
 async function photoToFile(p, idx) {
-    const j = await apiGet({ action: 'file', g: gallery?.slug || gallerySlug, id: p.id });
-    const bin = atob(j.data);
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    const type = j.mimeType || 'image/jpeg';
+    const r = await fetch(p.url, { mode: 'cors' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const blob = await r.blob();
+    const type = blob.type || 'image/jpeg';
     const ext = (type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
     const base = (p.name || `photo-${idx + 1}`).replace(/\.[^.]+$/, '');
-    return new File([bytes], `${base}.${ext}`, { type });
+    return new File([blob], `${base}.${ext}`, { type });
 }
 async function mapLimit(items, limit, fn, onTick) {
     const out = new Array(items.length);
@@ -1068,7 +1042,7 @@ function capture() {
     renderResults();
 }
 function renderResults() {
-    resultList = photos.slice(0, 6); // demo: แทนที่ด้วยผลจากระบบจดจำใบหน้าจริง
+    resultList = photos.slice(0, 6);
     $('btn-dl-results').classList.toggle('hidden', !resultList.length);
     const grid = $('result-grid');
     grid.innerHTML = resultList.length
@@ -1079,24 +1053,24 @@ function renderResults() {
 }
 
 /* ==================== ADMIN ==================== */
-let authMode = 'login';
 let myAlbums = [];
 let users = [];
 const TAB_TITLES = { dashboard: 'Overview', albums: 'Albums', account: 'Account', users: 'Users' };
 
 /* ---------- Open / close ---------- */
 function openAdmin() {
-    stopCamera(); stopPolling(); closeLightbox(); setSelectMode(false);
+    stopCamera(); unsubscribeGallery(); closeLightbox(); setSelectMode(false);
     $('app-guest').classList.add('hidden');
     $('app-admin').classList.remove('hidden');
     window.scrollTo(0, 0);
-    session ? showAdminShell() : showAuth();
+    if (session?.uid && auth.currentUser) showAdminShell();
+    else showAuth();
 }
 function exitAdmin(ownGallery) {
     $('app-admin').classList.add('hidden');
     $('app-guest').classList.remove('hidden');
-    if (ownGallery && session && session.user.slug !== gallerySlug) {
-        gallerySlug = session.user.slug;
+    if (ownGallery && session && session.slug !== gallerySlug) {
+        gallerySlug = session.slug;
         history.replaceState(null, '', galleryUrl(gallerySlug));
         resetGallery();
     }
@@ -1106,28 +1080,27 @@ function exitAdmin(ownGallery) {
 }
 
 /* ---------- Auth ---------- */
-async function showAuth() {
+let authMode = 'login';
+function showAuth() {
     $('admin-shell').classList.add('hidden');
     $('login-screen').classList.remove('hidden');
     setAuthMode('login');
-    try {
-        const j = await apiGet({ action: 'status' });
-        if (j.needsSetup) setAuthMode('setup');
-    } catch (e) { console.warn(e); }
     setTimeout(() => $(authMode === 'setup' ? 'auth-name' : 'auth-email').focus(), 50);
 }
 function setAuthMode(mode) {
     authMode = mode;
     const setup = mode === 'setup';
     $('setup-fields').classList.toggle('hidden', !setup);
-    $('auth-hint').classList.toggle('hidden', setup);
     $('auth-title').textContent = setup ? 'Create owner account' : 'Welcome back';
     $('auth-sub').textContent = setup ? 'First-time setup · this account can add other users' : 'Sign in to manage your galleries';
     $('auth-btn').textContent = setup ? 'Create account' : 'Sign in';
     $('auth-password').autocomplete = setup ? 'new-password' : 'current-password';
     $('auth-error').classList.add('hidden');
+    $('auth-toggle').textContent = setup ? 'Already have an account? Sign in' : 'First time? Create owner account';
 }
-function showAuthError(msg) { const el = $('auth-error'); el.textContent = msg; el.classList.remove('hidden'); }
+function showAuthError(msg) { $('auth-error').textContent = msg; $('auth-error').classList.remove('hidden'); }
+
+$('auth-toggle').addEventListener('click', () => setAuthMode(authMode === 'login' ? 'setup' : 'login'));
 
 $('auth-form').addEventListener('submit', async e => {
     e.preventDefault();
@@ -1135,24 +1108,33 @@ $('auth-form').addEventListener('submit', async e => {
     const setup = authMode === 'setup';
     const email = $('auth-email').value.trim().toLowerCase();
     const password = $('auth-password').value;
-    const payload = { email, password };
-
-    if (setup) {
-        payload.name = $('auth-name').value.trim();
-        payload.slug = slugify($('auth-slug').value) || slugify(payload.name) || randomSlug();
-        if (!payload.name) return showAuthError('Please enter a gallery name.');
-    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthError('Please enter a valid email address.');
     if (setup ? password.length < 6 : !password) return showAuthError(setup ? 'Password must be at least 6 characters.' : 'Please enter your password.');
+
+    const name = setup ? $('auth-name').value.trim() : '';
+    const slug = setup ? (slugify($('auth-slug').value) || slugify(name) || randomSlug()) : '';
+    if (setup && !name) return showAuthError('Please enter a gallery name.');
 
     const btn = $('auth-btn');
     setBusy(btn, true, setup ? 'Creating…' : 'Signing in…');
     try {
-        const j = await apiPost(authMode, payload);
-        saveSession(j);
+        if (setup) {
+            const cred = await auth.createUserWithEmailAndPassword(email, password);
+            await db.ref(`users/${cred.user.uid}`).set({ name, slug, email, role: 'owner', createdAt: Date.now() });
+            session = { uid: cred.user.uid, email, name, slug, role: 'owner' };
+            ownerPasswordCache = password;
+        } else {
+            const cred = await auth.signInWithEmailAndPassword(email, password);
+            const snap = await db.ref(`users/${cred.user.uid}`).once('value');
+            const data = snap.val();
+            if (!data) throw new Error('User profile not found. Please contact owner.');
+            session = { uid: cred.user.uid, email, ...data };
+            ownerPasswordCache = password;
+        }
+        saveSession(session);
         $('auth-password').value = '';
         showAdminShell();
-        toast(setup ? 'Owner account created' : `Welcome, ${j.user.name}`);
+        toast(setup ? 'Owner account created' : `Welcome, ${session.name}`);
     } catch (err) {
         showAuthError(err.message);
     } finally {
@@ -1161,8 +1143,9 @@ $('auth-form').addEventListener('submit', async e => {
 });
 
 function logout() {
-    if (session) apiPost('logout').catch(() => {});
+    auth.signOut();
     clearSession();
+    ownerPasswordCache = null;
     myAlbums = []; users = [];
     showAuth();
     toast('Signed out');
@@ -1175,19 +1158,13 @@ function showAdminShell() {
     renderMe();
     renderAccount();
     switchTab('albums');
-    // ตรวจสอบ session และอัปเดตข้อมูลผู้ใช้ล่าสุด
-    apiPost('me').then(j => {
-        session.user = j.user;
-        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-        renderMe(); renderAccount();
-    }).catch(err => console.warn(err));
 }
 function renderMe() {
-    const u = session.user;
-    $('me-name').textContent = u.name;
-    $('me-email').textContent = u.email;
-    $('me-role').textContent = u.role === 'owner' ? 'Owner' : 'Member';
-    $('me-avatar').textContent = (u.name || u.email).trim().charAt(0).toUpperCase();
+    if (!session) return;
+    $('me-name').textContent = session.name;
+    $('me-email').textContent = session.email;
+    $('me-role').textContent = session.role === 'owner' ? 'Owner' : 'Member';
+    $('me-avatar').textContent = (session.name || session.email).trim().charAt(0).toUpperCase();
     document.querySelectorAll('[data-owner]').forEach(el => el.classList.toggle('hidden', !isOwner()));
 }
 function switchTab(tab) {
@@ -1205,30 +1182,29 @@ function switchTab(tab) {
 /* ---------- Overview ---------- */
 async function loadStats() {
     renderAccount();
-    try {
-        const [a, l] = await Promise.all([
-            apiPost('getAlbums'),
-            apiGet({ action: 'live', g: session.user.slug })
-        ]);
-        myAlbums = a.albums;
-        $('stat-albums').textContent = myAlbums.length;
-        $('stat-active').textContent = l.album?.name || 'None';
-        $('stat-photos').textContent = l.album ? (l.data || []).length : '–';
-        $('stat-sync').textContent = `Last checked ${new Date().toLocaleString('en-GB')}${l.error ? ' · ' + l.error : ''}`;
-    } catch (e) { toast(e.message); }
+    if (!session?.slug) return;
+    const snap = await db.ref(`galleries/${session.slug}`).once('value');
+    const g = snap.val() || {};
+    const albumSnap = await db.ref(`albums/${session.uid}`).once('value');
+    const albums = albumSnap.val() || {};
+    myAlbums = Object.entries(albums).map(([id, a]) => ({ id, ...a }));
+    $('stat-albums').textContent = myAlbums.length;
+    $('stat-active').textContent = g.albumName || 'None';
+    $('stat-photos').textContent = g.photos ? Object.keys(g.photos).length : '–';
+    $('stat-sync').textContent = `Last checked ${new Date().toLocaleString('en-GB')}`;
 }
 
 /* ---------- Account ---------- */
 function renderAccount() {
     if (!session) return;
-    const url = galleryUrl(session.user.slug);
+    const url = galleryUrl(session.slug);
     document.querySelectorAll('.js-link-text').forEach(el => el.textContent = url);
     document.querySelectorAll('.js-link-open').forEach(el => el.href = url);
-    $('acc-name').textContent = session.user.name;
+    $('acc-name').textContent = session.name;
     $('acc-qr').src = qrSrc(url, 400);
     $('acc-qr-dl').href = qrSrc(url, 1000);
 }
-function copyMyLink() { if (session) copyText(galleryUrl(session.user.slug)); }
+function copyMyLink() { if (session) copyText(galleryUrl(session.slug)); }
 
 $('pw-form').addEventListener('submit', async e => {
     e.preventDefault();
@@ -1239,78 +1215,146 @@ $('pw-form').addEventListener('submit', async e => {
     const btn = $('pw-btn');
     setBusy(btn, true, 'Updating…');
     try {
-        await apiPost('changePassword', { current, password });
+        const cred = firebase.auth.EmailAuthProvider.credential(session.email, current);
+        await auth.currentUser.reauthenticateWithCredential(cred);
+        await auth.currentUser.updatePassword(password);
+        ownerPasswordCache = password;
         $('pw-form').reset();
         toast('Password updated');
     } catch (err) { toast(err.message); }
     finally { setBusy(btn, false); }
 });
 
-/* ---------- Albums (เฉพาะของบัญชีที่ล็อกอิน) ---------- */
-function parseFolderId(input) {
-    const v = input.trim();
-    const m = v.match(/folders\/([a-zA-Z0-9_-]+)/) || v.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    return m ? m[1] : v;
-}
+/* ---------- Albums ---------- */
 async function loadMyAlbums() {
-    if (!myAlbums.length) $('album-list').innerHTML = LOADING_ROW;
-    try {
-        myAlbums = (await apiPost('getAlbums')).albums;
-        renderAlbums();
-    } catch (e) { toast(e.message); renderAlbums(); }
-}
-async function commitAlbums(next, okMsg) {
-    const prev = myAlbums;
-    myAlbums = next;
+    if (!session?.uid) return;
+    $('album-list').innerHTML = LOADING_ROW;
+    const snap = await db.ref(`albums/${session.uid}`).once('value');
+    const data = snap.val() || {};
+    myAlbums = Object.entries(data).map(([id, a]) => ({ id, ...a })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     renderAlbums();
-    try {
-        myAlbums = (await apiPost('saveAlbums', { albums: next })).albums;
-        renderAlbums();
-        toast(okMsg);
-        if (session && (gallery?.slug || gallerySlug) === session.user.slug) resetGallery();
-        return true;
-    } catch (e) {
-        myAlbums = prev;
-        renderAlbums();
-        toast(e.message);
-        return false;
+}
+
+function storagePath(slug, albumId, photoId, ext) {
+    return `galleries/${slug}/${albumId}/${photoId}.${ext}`;
+}
+
+async function uploadPhotos(files, albumId) {
+    if (!session || !files.length) return;
+    const slug = session.slug;
+    const updates = {};
+    let uploaded = 0;
+    for (const file of Array.from(files)) {
+        const photoId = db.ref().push().key;
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const path = storagePath(slug, albumId, photoId, ext);
+        const ref = storage.ref(path);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        const thumb = url; // ใช้ full URL เป็น thumb ไปก่อน หรือจะ resize ทีหลัง
+        const photo = { name: file.name, url, thumb, created: Date.now(), storagePath: path };
+        updates[`albums/${session.uid}/${albumId}/photos/${photoId}`] = photo;
+        uploaded++;
     }
+    if (uploaded) {
+        await db.ref().update(updates);
+        await syncGalleryPublic(slug);
+        toast(`${plural(uploaded, 'photo')} uploaded`);
+    }
+}
+
+async function syncGalleryPublic(slug) {
+    if (!session) return;
+    const snap = await db.ref(`albums/${session.uid}`).once('value');
+    const albums = snap.val() || {};
+    const live = Object.entries(albums).find(([id, a]) => a.isActive);
+    if (!live) {
+        await db.ref(`galleries/${slug}`).update({ uid: session.uid, name: session.name, albumId: null, albumName: null, photos: null });
+        return;
+    }
+    const [albumId, album] = live;
+    const photos = album.photos ? Object.entries(album.photos)
+        .map(([id, p]) => ({ id, name: p.name, url: p.url, thumb: p.thumb, created: p.created }))
+        .sort((a, b) => (b.created || 0) - (a.created || 0)) : [];
+    const photosObj = {};
+    photos.forEach(p => { photosObj[p.id] = { name: p.name, url: p.url, thumb: p.thumb, created: p.created }; });
+    await db.ref(`galleries/${slug}`).set({ uid: session.uid, name: session.name, albumId, albumName: album.name, photos: photosObj });
+}
+
+async function setLiveAlbum(id) {
+    if (!session) return;
+    const updates = {};
+    myAlbums.forEach(a => { updates[`albums/${session.uid}/${a.id}/isActive`] = (a.id === id); });
+    await db.ref().update(updates);
+    myAlbums = myAlbums.map(a => ({ ...a, isActive: a.id === id }));
+    renderAlbums();
+    await syncGalleryPublic(session.slug);
+    toast('Live album updated on all devices');
+}
+
+async function deleteAlbum(id) {
+    if (!confirm('Delete this album? Photos in storage will be removed.')) return;
+    const album = myAlbums.find(a => a.id === id);
+    if (album?.photos) {
+        for (const [pid, p] of Object.entries(album.photos)) {
+            if (p.storagePath) try { await storage.ref(p.storagePath).delete(); } catch (e) {}
+        }
+    }
+    await db.ref(`albums/${session.uid}/${id}`).remove();
+    myAlbums = myAlbums.filter(a => a.id !== id);
+    renderAlbums();
+    await syncGalleryPublic(session.slug);
+    toast(album?.isActive ? 'Live album removed' : 'Album deleted');
 }
 
 $('album-form').addEventListener('submit', async e => {
     e.preventDefault();
     const name = $('album-name').value.trim();
-    const folderId = parseFolderId($('album-folder').value);
-    if (!name || !folderId) return toast('Please fill in both fields');
-    if (!/^[a-zA-Z0-9_-]{10,}$/.test(folderId)) return toast('Invalid folder ID');
-    if (myAlbums.some(a => a.folderId === folderId)) return toast('This folder already exists');
-
-    // อัลบั้มใหม่ขึ้นเป็น Live ทันที
-    const next = myAlbums.map(a => ({ ...a, isActive: false }))
-        .concat({ id: Date.now().toString(36), name, folderId, isActive: true });
+    if (!name) return toast('Please enter an album name');
     const btn = $('album-btn');
-    setBusy(btn, true, 'Adding…');
-    const ok = await commitAlbums(next, 'Album is now live on all devices');
-    setBusy(btn, false);
-    if (ok) { $('album-name').value = ''; $('album-folder').value = ''; }
+    setBusy(btn, true, 'Creating…');
+    try {
+        const id = db.ref().push().key;
+        const album = { name, isActive: true, createdAt: Date.now(), photos: {} };
+        // ปิดอัลบั้มอื่น
+        const updates = {};
+        myAlbums.forEach(a => { updates[`albums/${session.uid}/${a.id}/isActive`] = false; });
+        updates[`albums/${session.uid}/${id}`] = album;
+        await db.ref().update(updates);
+        myAlbums = myAlbums.map(a => ({ ...a, isActive: false })).concat({ id, ...album });
+        renderAlbums();
+        await syncGalleryPublic(session.slug);
+        $('album-name').value = '';
+        toast('Album created · upload photos below');
+    } catch (err) { toast(err.message); }
+    finally { setBusy(btn, false); }
 });
 
 $('album-list').addEventListener('click', async e => {
     const b = e.target.closest('[data-act]');
     if (!b) return;
     const id = b.dataset.id;
-    if (b.dataset.act === 'live') {
-        await commitAlbums(myAlbums.map(a => ({ ...a, isActive: a.id === id })), 'Live album updated on all devices');
-    } else if (b.dataset.act === 'delete') {
-        if (!confirm('Delete this album? Photos in Google Drive will not be affected.')) return;
-        const wasLive = myAlbums.find(a => a.id === id)?.isActive;
-        await commitAlbums(myAlbums.filter(a => a.id !== id), wasLive ? 'Live album removed' : 'Album deleted');
-    }
+    if (b.dataset.act === 'live') await setLiveAlbum(id);
+    else if (b.dataset.act === 'delete') await deleteAlbum(id);
+    else if (b.dataset.act === 'upload') $(`upload-${id}`).click();
+});
+
+$('album-list').addEventListener('change', async e => {
+    const input = e.target.closest('input[type="file"]');
+    if (!input?.files?.length) return;
+    const id = input.dataset.id;
+    const btn = input.nextElementSibling;
+    setBusy(btn, true, 'Uploading…');
+    try { await uploadPhotos(input.files, id); }
+    catch (err) { toast(err.message); }
+    finally { setBusy(btn, false); input.value = ''; }
 });
 
 function renderAlbums() {
     $('album-list').innerHTML = myAlbums.length
-        ? myAlbums.map(a => `
+        ? myAlbums.map(a => {
+            const photoCount = a.photos ? Object.keys(a.photos).length : 0;
+            return `
             <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 sm:px-8 py-5 transition ${a.isActive ? 'bg-sand/70' : 'hover:bg-white/60'}">
                 <span class="hidden sm:flex w-11 h-11 shrink-0 rounded-2xl ${a.isActive ? 'bg-gradient-to-br from-clay-light via-clay to-clay-dark text-white' : 'bg-sand text-clay'} items-center justify-center"><i class="fa-regular fa-folder-open text-sm"></i></span>
                 <div class="flex-1 min-w-0">
@@ -1318,33 +1362,36 @@ function renderAlbums() {
                         <p class="font-display text-xl truncate">${esc(a.name)}</p>
                         ${a.isActive ? '<span class="chip chip-sage shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-sage animate-pulse"></span>Live</span>' : ''}
                     </div>
-                    <p class="font-mono text-[11px] text-muted truncate mt-1">${esc(a.folderId)}</p>
+                    <p class="text-xs text-muted mt-1">${plural(photoCount, 'photo')}</p>
                 </div>
-                <div class="flex gap-2 shrink-0">
-                    ${a.isActive ? '' : `<button data-act="live" data-id="${esc(a.id)}" class="btn-ghost h-9 flex-1 sm:flex-none">Set live</button>`}
-                    <a href="https://drive.google.com/drive/folders/${encodeURIComponent(a.folderId)}" target="_blank" rel="noopener" class="btn-ghost h-9 w-9 px-0" aria-label="Open in Drive"><i class="fa-brands fa-google-drive text-xs"></i></a>
+                <div class="flex gap-2 shrink-0 flex-wrap">
+                    ${a.isActive ? '' : `<button data-act="live" data-id="${esc(a.id)}" class="btn-ghost h-9">Set live</button>`}
+                    <input type="file" id="upload-${esc(a.id)}" data-id="${esc(a.id)}" multiple accept="image/*" class="hidden">
+                    <button data-act="upload" data-id="${esc(a.id)}" class="btn-ghost h-9"><i class="fa-solid fa-cloud-arrow-up text-xs"></i> Upload</button>
                     <button data-act="delete" data-id="${esc(a.id)}" class="btn-danger" aria-label="Delete"><i class="fa-regular fa-trash-can text-xs"></i></button>
                 </div>
-            </div>`).join('')
+            </div>`;
+        }).join('')
         : `<div class="px-6 py-14 text-center">
                <span class="inline-flex w-14 h-14 rounded-full bg-sand text-clay items-center justify-center mb-4"><i class="fa-regular fa-folder text-lg"></i></span>
                <p class="font-display text-xl">No albums yet</p>
-               <p class="text-xs text-muted mt-1">Add your first Google Drive folder above.</p>
+               <p class="text-xs text-muted mt-1">Create your first album above.</p>
            </div>`;
 }
 
 /* ---------- Users (Owner เท่านั้น) ---------- */
 async function loadUsers() {
-    if (!users.length) $('user-list').innerHTML = LOADING_ROW;
-    try {
-        users = (await apiPost('listUsers')).users;
-        renderUsers();
-    } catch (e) { toast(e.message); }
+    if (!isOwner()) return;
+    $('user-list').innerHTML = LOADING_ROW;
+    const snap = await db.ref('users').once('value');
+    const data = snap.val() || {};
+    users = Object.entries(data).map(([id, u]) => ({ id, ...u }));
+    renderUsers();
 }
 function renderUsers() {
     $('user-count').textContent = plural(users.length, 'account');
     $('user-list').innerHTML = users.map(u => {
-        const me = u.id === session.user.id;
+        const me = u.id === session.uid;
         const owner = u.role === 'owner';
         const url = galleryUrl(u.slug);
         return `
@@ -1373,19 +1420,31 @@ $('user-list').addEventListener('click', async e => {
     if (!b) return;
     if (b.dataset.uact === 'copy') return copyText(b.dataset.url);
     if (b.dataset.uact === 'delete') {
-        if (!confirm(`Delete "${b.dataset.name}"? Their albums will be removed. Photos in Google Drive will not be affected.`)) return;
+        if (!confirm(`Delete "${b.dataset.name}"? Their albums and photos will be removed.`)) return;
         b.disabled = true;
         try {
-            await apiPost('deleteUser', { id: b.dataset.id });
+            // ลบรูปใน Storage ทั้งหมดของ user นี้
+            const albumSnap = await db.ref(`albums/${b.dataset.id}`).once('value');
+            const albums = albumSnap.val() || {};
+            for (const album of Object.values(albums)) {
+                if (album.photos) for (const p of Object.values(album.photos)) {
+                    if (p.storagePath) try { await storage.ref(p.storagePath).delete(); } catch (e) {}
+                }
+            }
+            await db.ref(`albums/${b.dataset.id}`).remove();
+            await db.ref(`galleries/${users.find(u => u.id === b.dataset.id)?.slug}`).remove();
+            await db.ref(`users/${b.dataset.id}`).remove();
+            // ลบ Firebase Auth user ต้องใช้ Admin SDK หรือให้ user นั้นลบตัวเอง ที่นี่ลบข้อมูลในระบบเราเท่านั้น
             users = users.filter(u => u.id !== b.dataset.id);
             renderUsers();
-            toast('Account deleted');
+            toast('Account removed from this app');
         } catch (err) { b.disabled = false; toast(err.message); }
     }
 });
 
 $('user-form').addEventListener('submit', async e => {
     e.preventDefault();
+    if (!ownerPasswordCache) return toast('Please sign in again to create accounts');
     const name = $('u-name').value.trim();
     const email = $('u-email').value.trim().toLowerCase();
     const password = $('u-password').value;
@@ -1393,12 +1452,25 @@ $('user-form').addEventListener('submit', async e => {
     if (!name) return toast('Please enter a name');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('Please enter a valid email');
     if (password.length < 6) return toast('Password must be at least 6 characters');
+    if (users.some(u => u.email === email)) return toast('This email is already in use');
+    if (users.some(u => u.slug === slug)) return toast('This gallery link is already taken');
 
     const btn = $('u-btn');
     setBusy(btn, true, 'Creating…');
     try {
-        const j = await apiPost('createUser', { name, email, password, slug });
-        users.push(j.user);
+        const ownerEmail = session.email;
+        const ownerPw = ownerPasswordCache;
+        // สร้าง user ใหม่
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const uid = cred.user.uid;
+        await db.ref(`users/${uid}`).set({ name, slug, email, role: 'member', createdAt: Date.now() });
+        // กลับมาเป็น owner
+        await auth.signInWithEmailAndPassword(ownerEmail, ownerPw);
+        // โหลด session owner ใหม่
+        const snap = await db.ref(`users/${session.uid}`).once('value');
+        session = { uid: session.uid, email: ownerEmail, ...snap.val() };
+        saveSession(session);
+        users.push({ id: uid, name, slug, email, role: 'member' });
         renderUsers();
         $('user-form').reset();
         $('u-slug').dataset.touched = '';
@@ -1419,6 +1491,15 @@ function bindSlug(nameId, slugId, previewId) {
     s.addEventListener('input', () => { s.dataset.touched = s.value ? '1' : ''; update(); });
     update();
 }
+
+/* ---------- Auth state guard ---------- */
+auth.onAuthStateChanged(user => {
+    if (!user && $('app-admin').classList.contains('hidden') === false) {
+        // ถูก sign out จากที่อื่น ให้กลับไปหน้า login
+        clearSession();
+        showAuth();
+    }
+});
 
 /* -------------------- INIT -------------------- */
 window.addEventListener('DOMContentLoaded', () => {
