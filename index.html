@@ -1,141 +1,99 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#fbf8f4">
+<meta name="theme-color" content="#faf7f2">
 <title>Toy Gallery 2000's</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-<script>
-    const FIREBASE_CONFIG = {
-        apiKey: "***************************************",
-        authDomain: "toy-gallery-2000s-4ea89.firebaseapp.com",
-        databaseURL: "https://toy-gallery-2000s-4ea89-default-rtdb.asia-southeast1.firebasedatabase.app/",
-        projectId: "toy-gallery-2000s-4ea89",
-        storageBucket: "toy-gallery-2000s-4ea89.firebasestorage.app",
-        messagingSenderId: "712072738636",
-        appId: "1:712072738636:web:26cf6c0200fc1ddcc641e9",
-        measurementId: "G-S7JX8BPJS6"
-    };
-    firebase.initializeApp(FIREBASE_CONFIG);
-</script>
-
 <script>
 tailwind.config = {
     theme: { extend: {
         fontFamily: {
-            display: ['"Yeseva One"', '"Kanit"', 'serif'],
-            sans:    ['"Kanit"', 'system-ui', 'sans-serif']
+            display: ['"Cormorant Garamond"', '"Noto Serif Thai"', 'Georgia', 'serif'],
+            serif:   ['Lora', '"Noto Serif Thai"', 'Georgia', 'serif'],
         },
         colors: {
-            cream: '#fbf8f4', sand: '#f4ece1', oat: '#ebdfcf', line: '#e7dccd',
-            ink: '#2e241d', muted: '#8c7a6b',
-            clay: { DEFAULT: '#a6754f', dark: '#7c5537', light: '#dcbf9f' },
-            sage: { DEFAULT: '#7d8c6c', dark: '#5d6b4f', light: '#e9eee2' },
-            blush: '#efd9cc'
+            cream: '#faf7f2', sand: '#f3ece2', line: '#e8dfd2',
+            ink: '#3a2e24', muted: '#8a7a6a',
+            clay: { DEFAULT: '#8c6b4a', dark: '#6e5339', light: '#c9ad8c' }
         }
     }}
 }
 </script>
+<!-- JSZip & FontAwesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&family=Yeseva+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK (Compat Version) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <style type="text/tailwindcss">
-    .btn-primary { @apply inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-gradient-to-b from-[#b8865e] to-clay-dark text-white text-[13px] font-medium tracking-wide hover:brightness-110 active:scale-[.97] transition duration-300 shadow-[0_10px_24px_-10px_rgba(124,85,55,.8)] disabled:opacity-50 disabled:pointer-events-none; }
-    .btn-ghost   { @apply inline-flex items-center justify-center gap-2 h-10 px-4 rounded-full border border-line bg-white/70 backdrop-blur text-[13px] font-medium text-ink hover:bg-white hover:border-clay/40 active:scale-[.97] transition duration-300 disabled:opacity-40 disabled:pointer-events-none; }
+    .btn-primary { @apply inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-clay text-cream text-[13px] font-medium tracking-wide hover:bg-clay-dark active:scale-[.97] transition duration-300 shadow-[0_8px_24px_-12px_rgba(110,83,57,.7)] disabled:opacity-50 disabled:pointer-events-none; }
+    .btn-ghost   { @apply inline-flex items-center justify-center gap-2 h-10 px-4 rounded-full border border-line bg-white/60 text-[13px] font-medium text-ink hover:bg-white hover:border-clay/40 active:scale-[.97] transition duration-300 disabled:opacity-40 disabled:pointer-events-none; }
     .btn-icon    { @apply inline-flex items-center justify-center w-10 h-10 rounded-full text-muted hover:text-ink hover:bg-sand transition duration-300; }
-    .btn-danger  { @apply inline-flex items-center justify-center h-9 w-9 rounded-full border border-line bg-white/70 text-[#b4574a] hover:bg-[#fbecea] hover:border-[#efc9c3] transition; }
-    .nav-link    { @apply inline-flex items-center h-10 px-4 rounded-full text-sm text-muted hover:text-ink hover:bg-sand/80 transition; }
-    .input       { @apply w-full h-12 px-4 rounded-2xl border border-line bg-white/80 text-sm text-ink placeholder:text-[#b5a596] focus:outline-none focus:ring-4 focus:ring-clay/10 focus:border-clay/50 transition; }
-    .glass       { @apply bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_-12px_rgba(46,36,29,.18)]; }
-    .card        { @apply bg-white/85 backdrop-blur-xl border border-line/80 rounded-3xl shadow-[0_12px_40px_-22px_rgba(46,36,29,.25)]; }
-    .logo        { @apply rounded-full bg-gradient-to-br from-clay-light via-clay to-clay-dark text-white flex items-center justify-center shadow-md; }
-    .eyebrow     { @apply text-[11px] uppercase tracking-[0.3em] text-muted; }
+    .input       { @apply w-full h-11 px-4 rounded-xl border border-line bg-white text-sm text-ink placeholder:text-stone-400 focus:outline-none focus:ring-4 focus:ring-clay/10 focus:border-clay/50 transition; }
+    .card        { @apply bg-white border border-line rounded-2xl shadow-[0_1px_2px_rgba(58,46,36,.04)]; }
+    .eyebrow     { @apply text-[11px] uppercase tracking-[0.28em] text-muted; }
     .label       { @apply block text-xs font-medium text-muted mb-1.5; }
-    .chip        { @apply inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-[10px] uppercase tracking-[0.16em] border border-line bg-white/70 text-muted; }
-    .chip-clay   { @apply bg-clay/10 border-clay/25 text-clay-dark; }
-    .chip-sage   { @apply bg-sage-light border-sage/30 text-sage-dark; }
-    .admin-tab   { @apply flex items-center gap-3 px-4 h-11 rounded-2xl text-sm text-muted hover:text-ink hover:bg-sand/80 transition whitespace-nowrap; }
-    .admin-tab.active { @apply bg-ink text-cream shadow-md hover:bg-ink hover:text-cream; }
-    .drop-zone   { @apply border-2 border-dashed border-line rounded-3xl p-6 text-center text-sm text-muted hover:border-clay/50 hover:bg-white/60 transition cursor-pointer; }
+    .admin-tab   { @apply flex items-center gap-3 px-3 h-10 rounded-xl text-sm text-muted hover:text-ink hover:bg-sand transition whitespace-nowrap; }
+    .admin-tab.active { @apply bg-sand text-ink font-medium; }
 </style>
 
 <style>
-    :root { --ease: cubic-bezier(.16,1,.3,1); }
-    body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
-        background-image: radial-gradient(ellipse at 15% 0%, rgba(239,217,204,.45), transparent 50%), radial-gradient(ellipse at 100% 30%, rgba(233,238,226,.6), transparent 45%); background-attachment: fixed; }
+    :root { --ease: cubic-bezier(.22,.8,.24,1); }
+    body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
 
-    .orb { position: fixed; z-index: -1; border-radius: 9999px; filter: blur(100px); pointer-events: none; }
-    .orb-1 { width: 520px; height: 520px; top: -200px; right: -140px; background: #ecd5bb; opacity: .65; }
-    .orb-2 { width: 460px; height: 460px; bottom: -220px; left: -160px; background: #efd9cc; opacity: .7; }
-    .orb-3 { width: 360px; height: 360px; top: 40%; left: 55%; background: #e3e9da; opacity: .5; }
-    .grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .035;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
-
-    .text-gradient { background: linear-gradient(120deg, #2e241d 5%, #7c5537 55%, #b98a63 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-
-    .rise { animation: rise .9s var(--ease) both; animation-delay: var(--d, 0ms); }
-    @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    .rise { animation: rise 1s var(--ease) both; animation-delay: var(--d, 0ms); }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     .fade-in { animation: fadeIn .5s var(--ease) both; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .tile { opacity: 0; transform: translateY(32px) scale(.98); transition: opacity .9s var(--ease), transform .9s var(--ease), box-shadow .5s var(--ease); transition-delay: var(--d, 0ms); }
+    .tile { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
     .tile.in { opacity: 1; transform: none; }
-    .tile img { opacity: 0; transform: scale(1.08); filter: blur(12px);
-        transition: opacity .8s var(--ease), transform 1.2s var(--ease), filter .9s var(--ease), border-radius .4s var(--ease); }
+    .tile img { opacity: 0; transform: scale(1.08); filter: blur(10px); transition: opacity .8s var(--ease), transform 1.4s var(--ease), filter .9s var(--ease), border-radius .4s var(--ease); }
     .tile img.loaded { opacity: 1; transform: scale(1); filter: none; }
-    .tile-shade { opacity: 0; transition: opacity .45s var(--ease); }
-    .tile-dl { transition: opacity .35s var(--ease), transform .35s var(--ease), background .2s; }
+    .tile-shade { opacity: 0; transition: opacity .5s var(--ease); }
     @media (hover: hover) {
-        .tile.in:hover { box-shadow: 0 24px 48px -24px rgba(46,36,29,.55); transition-delay: 0ms; }
-        .tile:hover img.loaded { transform: scale(1.05); }
+        .tile:hover img.loaded { transform: scale(1.045); }
         .tile:hover .tile-shade { opacity: 1; }
-        .tile-dl { opacity: 0; transform: translateY(8px) scale(.9); }
+        .tile-dl { opacity: 0; transform: translateY(6px); }
         .tile:hover .tile-dl { opacity: 1; transform: none; }
     }
+    .tile-dl { transition: opacity .4s var(--ease), transform .4s var(--ease), background .3s; }
 
-    .tile-check { opacity: 0; transform: scale(.4); transition: all .3s var(--ease); }
+    .tile-check { opacity: 0; transform: scale(.5); transition: all .35s var(--ease); }
     .selecting .tile-check { opacity: 1; transform: scale(1); }
     .selecting .tile-dl, .selecting .tile-shade { display: none; }
-    .tile.selected img.loaded, .tile.selected:hover img.loaded { transform: scale(.86); border-radius: 18px; }
-    .tile.selected .tile-check { background: #a6754f; border-color: #a6754f; color: #fff; }
-    .tile.selected { background: #ebdfcf; }
+    .tile.selected img.loaded, .tile.selected:hover img.loaded { transform: scale(.87); border-radius: 12px; }
+    .tile.selected .tile-check { background: #8c6b4a; border-color: #8c6b4a; color: #fff; }
+    .tile.selected { background: #efe5d8; }
 
-    .shimmer { background: linear-gradient(110deg, #f4ece1 30%, #fdfaf6 50%, #f4ece1 70%); background-size: 250% 100%; animation: shimmer 1.5s linear infinite; transition: opacity .6s; }
+    .shimmer { background: linear-gradient(100deg, #f3ece2 30%, #fbf8f3 50%, #f3ece2 70%); background-size: 220% 100%; animation: shimmer 1.6s linear infinite; transition: opacity .6s; }
     .shimmer.done { animation: none; opacity: 0; }
-    @keyframes shimmer { to { background-position: -250% 0; } }
+    @keyframes shimmer { to { background-position: -220% 0; } }
 
     #lightbox { opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility .45s; }
     #lightbox.open { opacity: 1; visibility: visible; }
     #lb-img { transition: opacity .35s var(--ease), transform .6s var(--ease); }
     #lightbox:not(.open) #lb-img { transform: scale(.94); }
     #lb-img.swap { opacity: 0; transform: scale(.97); }
-    .lb-thumb { opacity: .45; transition: opacity .3s, transform .3s var(--ease); }
-    .lb-thumb:hover { opacity: .85; }
-    .lb-thumb.active { opacity: 1; transform: translateY(-3px); outline: 2px solid #dcbf9f; outline-offset: 2px; }
 
-    #action-bar { transform: translateY(150%); transition: transform .55s var(--ease); }
+    #action-bar { transform: translateY(140%); transition: transform .55s var(--ease); }
     #action-bar.show { transform: none; }
     .sheet { opacity: 0; visibility: hidden; transition: opacity .35s var(--ease), visibility .35s; }
     .sheet.open { opacity: 1; visibility: visible; }
-    .sheet-panel { transform: translateY(40px) scale(.98); transition: transform .5s var(--ease); }
+    .sheet-panel { transform: translateY(40px); transition: transform .5s var(--ease); }
     .sheet.open .sheet-panel { transform: none; }
-    #to-top { opacity: 0; transform: translateY(12px); pointer-events: none; transition: all .4s var(--ease); }
-    #to-top.show { opacity: 1; transform: none; pointer-events: auto; }
 
-    .face-guide { border: 1.5px dashed rgba(251,248,244,.9); border-radius: 50%; box-shadow: 0 0 0 9999px rgba(46,36,29,.55); animation: breathe 2.8s var(--ease) infinite; }
-    @keyframes breathe { 50% { transform: scale(1.025); border-color: rgba(220,191,159,1); } }
+    .face-guide { border: 1.5px dashed rgba(250,247,242,.9); border-radius: 50%; box-shadow: 0 0 0 9999px rgba(58,46,36,.5); animation: breathe 2.6s var(--ease) infinite; }
+    @keyframes breathe { 50% { transform: scale(1.025); border-color: rgba(201,173,140,1); } }
 
     #toast { transition: opacity .35s var(--ease), transform .35s var(--ease); }
-    #toast.hide { opacity: 0; transform: translate(-50%, 14px); pointer-events: none; }
+    #toast.hide { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { scrollbar-width: none; }
 
     @media (prefers-reduced-motion: reduce) {
@@ -144,95 +102,95 @@ tailwind.config = {
 </style>
 </head>
 
-<body class="font-sans bg-cream text-ink min-h-screen selection:bg-clay/20">
-<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="grain"></div>
+<body class="font-serif bg-cream text-ink min-h-screen">
 
-<div id="progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-clay-light via-clay to-clay-dark z-[90] transition-all duration-500 opacity-0" style="width:0"></div>
+<div id="progress" class="fixed top-0 left-0 h-[2px] bg-clay z-[90] transition-all duration-500 opacity-0" style="width:0"></div>
 
 <!-- ============================== GUEST ============================== -->
 <div id="app-guest" class="min-h-screen flex flex-col">
 
-    <header class="sticky top-0 z-30 px-3 sm:px-6 pt-3">
-        <nav class="glass max-w-6xl mx-auto h-14 sm:h-16 px-2 rounded-full flex items-center justify-between">
-            <button onclick="showView('view-gallery')" class="flex items-center gap-2.5 pl-1 pr-3 h-11 rounded-full hover:bg-sand/70 transition">
-                <span class="logo w-9 h-9"><i class="fa-solid fa-camera-retro text-sm"></i></span>
-                <span class="font-display text-lg sm:text-xl leading-none">Toy Gallery <span class="text-clay">2000's</span></span>
+    <nav class="sticky top-0 z-30 bg-cream/80 backdrop-blur-md border-b border-line/70">
+        <div class="max-w-6xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+            <button onclick="showView('view-gallery')" class="flex items-center gap-3">
+                <span class="w-9 h-9 rounded-full border border-clay/30 text-clay flex items-center justify-center">
+                    <i class="fa-solid fa-camera-retro text-sm"></i>
+                </span>
+                <span class="font-display text-xl sm:text-2xl font-semibold tracking-tight">Toy Gallery <span class="italic font-normal text-clay">2000's</span></span>
             </button>
-            <div class="flex items-center gap-1 sm:gap-1.5">
-                <button onclick="showView('view-gallery')" class="nav-link hidden sm:inline-flex">Gallery</button>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button onclick="showView('view-gallery')" class="hidden sm:inline-flex btn-ghost border-transparent bg-transparent">Gallery</button>
                 <button onclick="showView('view-scan')" class="btn-primary h-10 px-4 sm:px-5">
                     <i class="fa-regular fa-face-smile"></i><span>Find Me</span>
                 </button>
                 <button onclick="openAdmin()" class="btn-icon" aria-label="Admin"><i class="fa-solid fa-lock text-xs"></i></button>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
     <main id="guest-main" class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 transition-[padding] duration-500">
 
         <!-- VIEW: GALLERY -->
         <section id="view-gallery" class="guest-view">
-            <header class="grid sm:grid-cols-[1fr_auto] gap-8 sm:gap-10 items-end pt-10 sm:pt-16 pb-10 sm:pb-14">
+            <header class="grid sm:grid-cols-[1fr_auto] gap-8 items-end pt-8 sm:pt-14 pb-10 sm:pb-14">
                 <div class="min-w-0">
-                    <div class="rise inline-flex items-center gap-2 h-8 pl-3 pr-3.5 rounded-full bg-white/70 backdrop-blur border border-line text-[11px] tracking-wide text-muted">
-                        <span class="relative flex w-2 h-2">
-                            <span id="sync-ping" class="absolute inline-flex w-full h-full rounded-full opacity-0"></span>
-                            <span id="sync-dot" class="relative inline-flex w-2 h-2 rounded-full bg-clay-light"></span>
-                        </span>
+                    <p class="rise eyebrow" style="--d:0ms">Event Gallery</p>
+                    <h1 id="album-title" class="rise mt-3 font-display text-[2.75rem] leading-[1.02] sm:text-7xl font-medium tracking-tight break-words" style="--d:80ms">Loading</h1>
+                    <div class="rise mt-5 flex items-center gap-3" style="--d:160ms">
+                        <span class="h-px w-10 bg-clay/50"></span>
+                        <p class="font-display italic text-xl sm:text-2xl text-clay">Scan to get your photos</p>
+                    </div>
+                    <p class="rise mt-6 flex items-center gap-2 text-xs text-muted" style="--d:240ms">
+                        <span id="sync-dot" class="w-1.5 h-1.5 rounded-full bg-stone-300"></span>
                         <span id="status-label">Connecting…</span>
-                    </div>
-                    <p id="gallery-name" class="rise eyebrow mt-6" style="--d:60ms">Event Gallery</p>
-                    <h1 id="album-title" class="rise text-gradient font-display text-5xl sm:text-7xl lg:text-8xl leading-[1.08] pb-2 mt-2 break-words" style="--d:120ms">Loading</h1>
-                    <div class="rise mt-3 flex items-center gap-4" style="--d:200ms">
-                        <span class="h-px w-12 bg-gradient-to-r from-clay to-transparent"></span>
-                        <p class="text-lg sm:text-xl text-clay font-light">สแกนเพื่อรับรูป</p>
+                    </p>
+                </div>
+
+                <div class="rise hidden sm:block" style="--d:220ms">
+                    <div class="card p-4 w-44 text-center">
+                        <img id="qr-img" alt="QR code" class="w-36 h-36 mx-auto">
+                        <p class="mt-3 eyebrow text-[10px] tracking-[0.2em]">Scan with phone</p>
                     </div>
                 </div>
 
-                <div class="rise hidden sm:block" style="--d:260ms">
-                    <div class="p-px rounded-[28px] bg-gradient-to-br from-clay-light via-blush to-white shadow-[0_20px_50px_-25px_rgba(46,36,29,.5)]">
-                        <div class="rounded-[27px] bg-white/90 backdrop-blur p-5 text-center">
-                            <img id="qr-img" alt="QR code" class="w-36 h-36 mx-auto">
-                            <p class="mt-3 text-xs text-muted"><i class="fa-solid fa-qrcode mr-1"></i> Scan with your phone</p>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="shareGallery()" class="rise sm:hidden btn-ghost w-full h-12" style="--d:300ms">
+                <button onclick="shareGallery()" class="rise sm:hidden btn-ghost w-full h-11" style="--d:300ms">
                     <i class="fa-solid fa-arrow-up-from-bracket text-xs"></i> Share this album
                 </button>
             </header>
 
-            <div class="sticky top-[72px] sm:top-[84px] z-20 mb-6 sm:mb-8">
-                <div class="glass rounded-2xl h-14 px-4 sm:px-5 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <h2 class="font-display text-xl sm:text-2xl">All Photos</h2>
-                        <span id="photo-count" class="hidden text-[11px] text-clay-dark bg-sand px-2.5 py-1 rounded-full"></span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="btn-select-all" onclick="selectAll()" class="hidden btn-ghost h-9 fade-in">Select all</button>
-                        <button id="btn-select" onclick="setSelectMode(!selecting)" class="btn-ghost h-9" disabled>
-                            <i class="fa-regular fa-square-check text-xs"></i><span>Select</span>
-                        </button>
-                    </div>
+            <!-- Toolbar -->
+            <div class="sticky top-16 z-20 -mx-4 px-4 sm:-mx-8 sm:px-8 bg-cream/85 backdrop-blur-md border-y border-line/70 py-3 mb-5 sm:mb-8 flex items-center justify-between">
+                <div class="flex items-baseline gap-3">
+                    <h2 class="font-display text-2xl font-medium">All Photos</h2>
+                    <span id="photo-count" class="text-xs text-muted"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btn-select-all" onclick="selectAll()" class="hidden btn-ghost h-9 fade-in">Select all</button>
+                    <button id="btn-select" onclick="setSelectMode(!selecting)" class="btn-ghost h-9" disabled>
+                        <i class="fa-regular fa-square-check text-xs"></i><span>Select</span>
+                    </button>
                 </div>
             </div>
 
-            <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5 pb-16"></div>
+            <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-5 pb-10">
+                <div class="aspect-[4/5] rounded-xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl shimmer"></div>
+            </div>
         </section>
 
         <!-- VIEW: FACE SCAN -->
-        <section id="view-scan" class="guest-view hidden py-10 sm:py-16">
+        <section id="view-scan" class="guest-view hidden py-8 sm:py-14">
             <div class="max-w-2xl mx-auto">
                 <div class="flex items-start justify-between mb-8">
                     <div>
                         <p class="eyebrow rise">Face Search</p>
-                        <h1 class="rise text-gradient font-display text-4xl sm:text-6xl mt-2 pb-1" style="--d:80ms">Find your photos</h1>
+                        <h1 class="rise font-display text-4xl sm:text-5xl font-medium tracking-tight mt-2" style="--d:80ms">Find your photos</h1>
                         <p class="rise text-sm text-muted mt-2" style="--d:160ms">Position your face inside the frame.</p>
                     </div>
-                    <button onclick="showView('view-gallery')" class="btn-icon bg-white/70 border border-line" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="showView('view-gallery')" class="btn-icon border border-line" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <div class="rise relative w-full aspect-[3/4] sm:aspect-video bg-ink rounded-[32px] overflow-hidden flex items-center justify-center shadow-[0_30px_60px_-30px_rgba(46,36,29,.7)]" style="--d:200ms">
+                <div class="rise relative w-full aspect-[3/4] sm:aspect-video bg-ink rounded-3xl overflow-hidden flex items-center justify-center" style="--d:200ms">
                     <video id="camera" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover -scale-x-100"></video>
                     <div class="face-guide relative z-10 w-52 h-72 sm:w-56 sm:h-72"></div>
                     <div id="camera-error" class="hidden absolute inset-0 z-20 bg-ink text-cream flex-col items-center justify-center text-center p-6">
@@ -248,11 +206,11 @@ tailwind.config = {
         </section>
 
         <!-- VIEW: RESULT -->
-        <section id="view-result" class="guest-view hidden py-10 sm:py-16">
-            <div class="grid lg:grid-cols-[290px_1fr] gap-8 lg:gap-12">
-                <aside class="card p-8 text-center lg:sticky lg:top-28 h-max rise">
-                    <img id="profile-img" alt="" class="w-28 h-28 mx-auto rounded-full object-cover bg-sand ring-8 ring-sand/70">
-                    <p class="font-display text-2xl mt-6">Search complete</p>
+        <section id="view-result" class="guest-view hidden py-8 sm:py-14">
+            <div class="grid lg:grid-cols-[280px_1fr] gap-8 lg:gap-12">
+                <aside class="card p-7 text-center lg:sticky lg:top-24 h-max rise">
+                    <img id="profile-img" alt="" class="w-28 h-28 mx-auto rounded-full object-cover bg-sand ring-4 ring-sand">
+                    <p class="font-display text-2xl mt-5">Search complete</p>
                     <p class="text-xs text-muted mt-1">Demo mode · face matching not connected</p>
                     <button onclick="showView('view-scan')" class="btn-ghost w-full mt-6"><i class="fa-solid fa-rotate-right text-xs"></i> Try again</button>
                 </aside>
@@ -260,31 +218,25 @@ tailwind.config = {
                     <div class="flex items-end justify-between mb-6 gap-4">
                         <div>
                             <p class="eyebrow">Results</p>
-                            <h2 class="text-gradient font-display text-4xl mt-1 pb-1">Your photos</h2>
+                            <h2 class="font-display text-4xl font-medium tracking-tight mt-1">Your photos</h2>
                         </div>
                         <button id="btn-dl-results" onclick="downloadPhotos(resultList)" class="btn-primary h-10 px-5"><i class="fa-solid fa-arrow-down text-xs"></i> Download all</button>
                     </div>
-                    <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-5"></div>
+                    <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-5"></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="py-10 text-center">
-        <div class="mx-auto mb-6 h-px max-w-xs bg-gradient-to-r from-transparent via-clay-light to-transparent"></div>
-        <p class="font-display text-lg text-clay">Toy Gallery 2000's</p>
+    <footer class="border-t border-line/70 py-8 text-center">
+        <p class="font-display italic text-lg text-clay">Toy Gallery 2000's</p>
         <p class="eyebrow text-[10px] mt-1">Captured with care</p>
     </footer>
 </div>
 
-<!-- TO TOP -->
-<button id="to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="glass fixed right-4 sm:right-6 bottom-6 z-30 w-11 h-11 rounded-full text-ink flex items-center justify-center" aria-label="Back to top">
-    <i class="fa-solid fa-arrow-up text-xs"></i>
-</button>
-
 <!-- SELECTION ACTION BAR -->
 <div id="action-bar" class="fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pointer-events-none">
-    <div class="pointer-events-auto mx-auto max-w-lg bg-ink/90 backdrop-blur-xl border border-white/10 text-cream rounded-full pl-6 pr-2 h-16 flex items-center gap-3 shadow-[0_24px_60px_-20px_rgba(46,36,29,.8)]">
+    <div class="pointer-events-auto mx-auto max-w-lg bg-ink text-cream rounded-full pl-6 pr-2 h-16 flex items-center gap-3 shadow-[0_20px_50px_-15px_rgba(58,46,36,.6)]">
         <div class="flex-1 min-w-0">
             <p id="sel-count" class="font-display text-xl leading-none">0 selected</p>
             <p id="sel-hint" class="text-[11px] text-cream/50 mt-1">Tap photos to select</p>
@@ -297,17 +249,16 @@ tailwind.config = {
 </div>
 
 <!-- LIGHTBOX -->
-<div id="lightbox" class="fixed inset-0 z-50 bg-[#1b140f]/95 backdrop-blur-xl flex flex-col">
+<div id="lightbox" class="fixed inset-0 z-50 bg-[#1f1812]/95 backdrop-blur-sm flex flex-col">
     <div class="flex items-center justify-between px-4 sm:px-6 h-16 text-cream">
         <span id="lb-counter" class="font-display text-lg tracking-wider text-cream/70"></span>
-        <button onclick="closeLightbox()" class="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeLightbox()" class="w-10 h-10 rounded-full hover:bg-white/10 transition" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div id="lb-stage" class="flex-1 relative flex items-center justify-center px-4 sm:px-24 min-h-0">
-        <button onclick="stepLightbox(-1)" class="hidden sm:flex absolute left-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-cream items-center justify-center transition"><i class="fa-solid fa-chevron-left text-sm"></i></button>
-        <img id="lb-img" alt="" class="max-h-full max-w-full object-contain rounded-2xl shadow-2xl">
-        <button onclick="stepLightbox(1)" class="hidden sm:flex absolute right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-cream items-center justify-center transition"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+    <div id="lb-stage" class="flex-1 relative flex items-center justify-center px-4 sm:px-20 min-h-0">
+        <button onclick="stepLightbox(-1)" class="hidden sm:flex absolute left-6 w-12 h-12 rounded-full border border-white/15 hover:bg-white/10 text-cream items-center justify-center transition"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+        <img id="lb-img" alt="" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl">
+        <button onclick="stepLightbox(1)" class="hidden sm:flex absolute right-6 w-12 h-12 rounded-full border border-white/15 hover:bg-white/10 text-cream items-center justify-center transition"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
-    <div id="lb-thumbs" class="flex gap-2 overflow-x-auto no-scrollbar px-4 pt-4 pb-1 mx-auto max-w-full"></div>
     <div class="p-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-2">
         <button id="lb-download" onclick="downloadPhotos([photos[lbIndex]])" class="inline-flex items-center justify-center gap-2 h-12 w-full sm:w-auto px-10 rounded-full bg-cream text-ink text-[13px] font-medium hover:bg-white transition disabled:opacity-50">
             <i class="fa-solid fa-arrow-down text-xs"></i> Download photo
@@ -316,208 +267,108 @@ tailwind.config = {
     </div>
 </div>
 
-<!-- READY-TO-SAVE SHEET -->
+<!-- READY-TO-SAVE SHEET (mobile) -->
 <div id="ready-sheet" class="sheet fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-ink/40 backdrop-blur-sm p-0 sm:p-4" onclick="if(event.target===this)closeSheet()">
-    <div class="sheet-panel w-full sm:max-w-sm bg-cream rounded-t-[32px] sm:rounded-[32px] p-8 pb-[max(2rem,env(safe-area-inset-bottom))] text-center">
-        <span class="logo inline-flex w-16 h-16"><i class="fa-solid fa-check text-lg"></i></span>
-        <h3 class="font-display text-3xl mt-5">Ready to save</h3>
+    <div class="sheet-panel w-full sm:max-w-sm bg-cream rounded-t-[28px] sm:rounded-[28px] p-7 pb-[max(1.75rem,env(safe-area-inset-bottom))] text-center">
+        <span class="inline-flex w-14 h-14 rounded-full bg-sand text-clay items-center justify-center"><i class="fa-solid fa-check text-lg"></i></span>
+        <h3 class="font-display text-3xl mt-4">Ready to save</h3>
         <p id="ready-count" class="text-sm text-muted mt-1"></p>
-        <button onclick="shareReady()" class="btn-primary w-full h-12 mt-7"><i class="fa-solid fa-download text-xs"></i> Save to Photos</button>
+        <button onclick="shareReady()" class="btn-primary w-full h-12 mt-6"><i class="fa-solid fa-download text-xs"></i> Save to Photos</button>
         <button onclick="closeSheet()" class="w-full h-11 mt-2 text-sm text-muted hover:text-ink transition">Cancel</button>
     </div>
 </div>
 
-<div id="toast" class="hide fixed bottom-24 left-1/2 -translate-x-1/2 z-[80] w-max max-w-[calc(100vw-2rem)] text-center bg-ink/90 backdrop-blur text-cream text-sm px-5 py-3 rounded-full shadow-xl border border-white/10"></div>
+<!-- TOAST -->
+<div id="toast" class="hide fixed bottom-24 left-1/2 -translate-x-1/2 z-[80] bg-ink text-cream text-sm px-5 py-3 rounded-full shadow-xl whitespace-nowrap"></div>
 
 <!-- ============================== ADMIN ============================== -->
 <div id="app-admin" class="hidden min-h-screen">
 
-    <!-- AUTH -->
-    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,#f3ece2,transparent_60%)]">
         <div class="w-full max-w-sm rise">
             <div class="text-center mb-8">
-                <span class="logo inline-flex w-14 h-14 rounded-2xl mb-5"><i class="fa-solid fa-camera-retro text-lg"></i></span>
-                <h1 id="auth-title" class="text-gradient font-display text-4xl pb-1">Welcome back</h1>
-                <p id="auth-sub" class="text-sm text-muted mt-1">Sign in to manage your galleries</p>
+                <span class="inline-flex w-12 h-12 rounded-full border border-clay/30 text-clay items-center justify-center mb-5"><i class="fa-solid fa-camera-retro"></i></span>
+                <h1 class="font-display text-4xl font-medium tracking-tight">Welcome back</h1>
+                <p class="text-sm text-muted mt-1">Sign in to manage your galleries</p>
             </div>
-            <form id="auth-form" class="card p-7 space-y-4" novalidate>
-                <div id="setup-fields" class="hidden space-y-4">
-                    <div>
-                        <label for="auth-name" class="label">Gallery name</label>
-                        <input id="auth-name" type="text" placeholder="Toy Gallery 2000's" class="input">
-                    </div>
-                    <div>
-                        <label for="auth-slug" class="label">Gallery link</label>
-                        <input id="auth-slug" type="text" placeholder="toy-gallery" class="input font-mono text-xs">
-                        <p id="auth-slug-preview" class="text-[11px] text-muted mt-1.5 truncate"></p>
-                    </div>
+            <form id="login-form" class="card p-6 sm:p-7 space-y-4" novalidate>
+                <div>
+                    <label for="login-email" class="label">Email</label>
+                    <input id="login-email" type="email" autocomplete="username" placeholder="you@example.com" class="input">
                 </div>
                 <div>
-                    <label for="auth-email" class="label">Email</label>
-                    <input id="auth-email" type="email" autocomplete="username" placeholder="***@*******.***" class="input">
-                </div>
-                <div>
-                    <label for="auth-password" class="label">Password</label>
+                    <label for="login-password" class="label">Password</label>
                     <div class="relative">
-                        <input id="auth-password" type="password" autocomplete="current-password" placeholder="••••••••" class="input pr-12">
-                        <button type="button" onclick="togglePw('auth-password', this)" class="absolute right-1.5 top-1/2 -translate-y-1/2 btn-icon w-9 h-9" aria-label="Show password"><i class="fa-regular fa-eye text-xs"></i></button>
+                        <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" class="input pr-11">
+                        <button type="button" onclick="togglePassword()" class="absolute right-1 top-1/2 -translate-y-1/2 btn-icon w-9 h-9" aria-label="Show password"><i id="pw-eye" class="fa-regular fa-eye text-xs"></i></button>
                     </div>
                 </div>
-                <p id="auth-error" class="hidden text-xs text-[#a3473b] bg-[#fbecea] border border-[#f3d3cd] rounded-2xl px-3 py-2.5"></p>
-                <button id="auth-btn" type="submit" class="btn-primary w-full h-12">Sign in</button>
+                <p id="login-error" class="hidden text-xs text-red-700 bg-red-50 border border-red-100 rounded-xl px-3 py-2.5"></p>
+                <button id="login-btn" type="submit" class="btn-primary w-full">Sign in</button>
             </form>
-            <div class="text-center mt-5 space-y-2">
-                <button id="auth-toggle" type="button" class="text-xs text-muted hover:text-ink transition underline underline-offset-4">First time? Create owner account</button>
-                <button onclick="exitAdmin(false)" class="block w-full text-sm text-muted hover:text-ink transition"><i class="fa-solid fa-arrow-left text-xs mr-1"></i> Back to gallery</button>
-            </div>
+            <button onclick="exitAdmin()" class="w-full mt-6 text-sm text-muted hover:text-ink transition"><i class="fa-solid fa-arrow-left text-xs mr-1"></i> Back to gallery</button>
         </div>
     </div>
 
-    <!-- ADMIN SHELL -->
     <div id="admin-shell" class="hidden min-h-screen md:flex">
-        <aside class="hidden md:flex w-64 shrink-0 flex-col bg-white/70 backdrop-blur-xl border-r border-line h-screen sticky top-0">
-            <div class="h-20 px-5 flex items-center gap-3">
-                <span class="logo w-10 h-10 rounded-2xl"><i class="fa-solid fa-camera-retro text-sm"></i></span>
-                <div>
-                    <p class="font-display text-lg leading-none">Toy Gallery</p>
-                    <p class="text-[10px] uppercase tracking-[0.2em] text-muted mt-1">Admin</p>
-                </div>
+        <aside class="hidden md:flex w-64 shrink-0 flex-col bg-white border-r border-line h-screen sticky top-0">
+            <div class="h-16 px-5 flex items-center gap-3 border-b border-line">
+                <span class="w-8 h-8 rounded-full border border-clay/30 text-clay flex items-center justify-center"><i class="fa-solid fa-camera-retro text-xs"></i></span>
+                <span class="font-display text-xl font-semibold">Toy Gallery</span>
             </div>
             <nav class="flex-1 p-3 space-y-1">
-                <p class="eyebrow text-[10px] px-4 pt-2 pb-2">Manage</p>
+                <p class="eyebrow text-[10px] px-3 pt-2 pb-2">Manage</p>
                 <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab w-full"><i class="fa-solid fa-chart-simple w-4"></i> Overview</button>
                 <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab w-full"><i class="fa-regular fa-folder w-4"></i> Albums</button>
-                <button data-tab="account" onclick="switchTab('account')" class="admin-tab w-full"><i class="fa-regular fa-user w-4"></i> Account</button>
-                <button data-tab="users" data-owner onclick="switchTab('users')" class="admin-tab w-full hidden"><i class="fa-solid fa-user-group w-4"></i> Users</button>
             </nav>
             <div class="p-3 border-t border-line space-y-1">
-                <div class="flex items-center gap-3 px-3 py-2">
-                    <span id="me-avatar" class="w-9 h-9 shrink-0 rounded-full bg-sand text-clay-dark font-display flex items-center justify-center">A</span>
-                    <div class="min-w-0 flex-1">
-                        <p id="me-name" class="text-sm truncate"></p>
-                        <p id="me-email" class="text-[11px] text-muted truncate"></p>
-                    </div>
-                    <span id="me-role" class="chip chip-clay shrink-0"></span>
-                </div>
-                <button onclick="exitAdmin(true)" class="admin-tab w-full"><i class="fa-solid fa-globe w-4"></i> View my gallery</button>
-                <button onclick="logout()" class="admin-tab w-full hover:!text-[#a3473b] hover:!bg-[#fbecea]"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sign out</button>
+                <p id="admin-email" class="px-3 py-2 text-xs text-muted truncate"></p>
+                <button onclick="exitAdmin()" class="admin-tab w-full"><i class="fa-solid fa-globe w-4"></i> View gallery</button>
+                <button onclick="logout()" class="admin-tab w-full hover:text-red-700"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sign out</button>
             </div>
         </aside>
 
         <div class="flex-1 min-w-0">
-            <header class="sticky top-0 z-20 bg-cream/80 backdrop-blur-xl border-b border-line">
-                <div class="h-20 px-4 sm:px-10 flex items-center justify-between">
-                    <h2 id="admin-title" class="text-gradient font-display text-3xl pb-1">Albums</h2>
+            <header class="sticky top-0 z-20 bg-cream/90 backdrop-blur border-b border-line">
+                <div class="h-16 px-4 sm:px-10 flex items-center justify-between">
+                    <h2 id="admin-title" class="font-display text-3xl font-medium tracking-tight">Albums</h2>
                     <div class="flex items-center gap-1 md:hidden">
-                        <button onclick="exitAdmin(true)" class="btn-icon" aria-label="View gallery"><i class="fa-solid fa-globe text-sm"></i></button>
+                        <button onclick="exitAdmin()" class="btn-icon" aria-label="View gallery"><i class="fa-solid fa-globe text-sm"></i></button>
                         <button onclick="logout()" class="btn-icon" aria-label="Sign out"><i class="fa-solid fa-arrow-right-from-bracket text-sm"></i></button>
                     </div>
                 </div>
-                <nav class="md:hidden flex gap-1.5 px-4 pb-3 overflow-x-auto no-scrollbar">
-                    <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab h-10"><i class="fa-solid fa-chart-simple"></i> Overview</button>
-                    <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab h-10"><i class="fa-regular fa-folder"></i> Albums</button>
-                    <button data-tab="account" onclick="switchTab('account')" class="admin-tab h-10"><i class="fa-regular fa-user"></i> Account</button>
-                    <button data-tab="users" data-owner onclick="switchTab('users')" class="admin-tab h-10 hidden"><i class="fa-solid fa-user-group"></i> Users</button>
+                <nav class="md:hidden flex gap-1 px-4 pb-3 overflow-x-auto no-scrollbar">
+                    <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab"><i class="fa-solid fa-chart-simple"></i> Overview</button>
+                    <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab"><i class="fa-regular fa-folder"></i> Albums</button>
                 </nav>
             </header>
 
             <main class="p-4 sm:p-10 max-w-4xl">
-                <!-- OVERVIEW -->
                 <section id="tab-dashboard" class="admin-section hidden space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div class="card p-6 rise"><p class="eyebrow text-[10px]">Albums</p><p id="stat-albums" class="font-display text-5xl mt-3">–</p></div>
+                        <div class="card p-6 rise"><p class="eyebrow text-[10px]">Albums</p><p id="stat-albums" class="font-display text-5xl mt-3">0</p></div>
                         <div class="card p-6 rise" style="--d:80ms"><p class="eyebrow text-[10px]">Photos live</p><p id="stat-photos" class="font-display text-5xl mt-3">–</p></div>
-                        <div class="card p-6 min-w-0 rise" style="--d:160ms"><p class="eyebrow text-[10px]">Live album</p><p id="stat-active" class="font-display text-2xl mt-4 truncate text-clay">–</p></div>
+                        <div class="card p-6 min-w-0 rise" style="--d:160ms"><p class="eyebrow text-[10px]">Live album</p><p id="stat-active" class="font-display text-2xl mt-4 truncate">–</p></div>
                     </div>
-                    <div class="card p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 rise" style="--d:220ms">
-                        <div class="min-w-0 flex-1">
-                            <p class="eyebrow text-[10px]">Your gallery link</p>
-                            <p class="js-link-text font-mono text-xs mt-2 truncate"></p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="copyMyLink()" class="btn-ghost h-9"><i class="fa-regular fa-copy text-xs"></i> Copy</button>
-                            <a class="js-link-open btn-ghost h-9" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Open</a>
-                        </div>
-                    </div>
-                    <p id="stat-sync" class="text-xs text-muted px-1"></p>
+                    <p id="stat-sync" class="text-xs text-muted"></p>
                 </section>
 
-                <!-- ALBUMS -->
                 <section id="tab-albums" class="admin-section hidden space-y-6">
-                    <div class="card p-6 sm:p-8 rise">
-                        <div class="flex flex-wrap items-center justify-between gap-3">
-                            <h3 class="font-display text-2xl">Create album</h3>
-                            <span class="chip chip-sage"><i class="fa-solid fa-bolt"></i> Real-time sync</span>
-                        </div>
-                        <p class="text-xs text-muted mt-2 mb-5">Create an album first, then upload photos. New albums go live immediately.</p>
-                        <form id="album-form" class="grid sm:grid-cols-[1fr_auto] gap-3" novalidate>
+                    <div class="card p-6 sm:p-7 rise">
+                        <h3 class="font-display text-2xl">Add Google Drive folder</h3>
+                        <p class="text-xs text-muted mt-1 mb-5">Paste the full folder link or just the folder ID. New folders go live immediately and replace the current album. The folder must be shared as "Anyone with the link".</p>
+                        <form id="album-form" class="grid sm:grid-cols-[1fr_1fr_auto] gap-3" novalidate>
                             <input id="album-name" type="text" placeholder="Album name" class="input">
-                            <button id="album-btn" type="submit" class="btn-primary h-12"><i class="fa-solid fa-plus text-xs"></i> Create</button>
+                            <input id="album-folder" type="text" placeholder="Folder link or ID" class="input font-mono text-xs">
+                            <button type="submit" class="btn-primary"><i class="fa-solid fa-plus text-xs"></i> Add</button>
                         </form>
                     </div>
                     <div class="card overflow-hidden rise" style="--d:80ms">
-                        <div class="px-6 sm:px-8 py-5 border-b border-line flex items-center justify-between">
-                            <h3 class="font-display text-2xl">Your albums</h3>
+                        <div class="px-6 sm:px-7 py-4 border-b border-line flex items-center justify-between">
+                            <h3 class="font-display text-2xl">All albums</h3>
                             <span class="text-xs text-muted">One live album at a time</span>
                         </div>
                         <div id="album-list" class="divide-y divide-line"></div>
-                    </div>
-                </section>
-
-                <!-- ACCOUNT -->
-                <section id="tab-account" class="admin-section hidden space-y-6">
-                    <div class="card p-6 sm:p-8 grid sm:grid-cols-[auto_1fr] gap-6 sm:gap-8 items-center rise">
-                        <div class="p-px rounded-[24px] bg-gradient-to-br from-clay-light via-blush to-white w-max mx-auto">
-                            <div class="rounded-[23px] bg-white p-4"><img id="acc-qr" alt="Gallery QR code" class="w-36 h-36"></div>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="eyebrow text-[10px]">Your gallery</p>
-                            <h3 id="acc-name" class="text-gradient font-display text-3xl mt-1 pb-1 truncate"></h3>
-                            <p class="js-link-text font-mono text-xs text-muted mt-1 break-all"></p>
-                            <div class="flex flex-wrap gap-2 mt-5">
-                                <button onclick="copyMyLink()" class="btn-primary h-10 px-5"><i class="fa-regular fa-copy text-xs"></i> Copy link</button>
-                                <a class="js-link-open btn-ghost" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Open</a>
-                                <a id="acc-qr-dl" class="btn-ghost" target="_blank" rel="noopener"><i class="fa-solid fa-qrcode text-xs"></i> Print QR</a>
-                            </div>
-                            <p class="text-xs text-muted mt-4">Guests who scan this QR only see the album you set live.</p>
-                        </div>
-                    </div>
-                    <div class="card p-6 sm:p-8 rise" style="--d:80ms">
-                        <h3 class="font-display text-2xl">Change password</h3>
-                        <form id="pw-form" class="grid sm:grid-cols-3 gap-3 mt-5" novalidate>
-                            <input id="pw-current" type="password" autocomplete="current-password" placeholder="Current password" class="input">
-                            <input id="pw-new" type="password" autocomplete="new-password" placeholder="New password (6+ chars)" class="input">
-                            <input id="pw-confirm" type="password" autocomplete="new-password" placeholder="Confirm new password" class="input">
-                            <button id="pw-btn" type="submit" class="btn-primary h-12 sm:col-span-3 sm:justify-self-start">Update password</button>
-                        </form>
-                    </div>
-                </section>
-
-                <!-- USERS (owner only) -->
-                <section id="tab-users" class="admin-section hidden space-y-6">
-                    <div class="card p-6 sm:p-8 rise">
-                        <h3 class="font-display text-2xl">Add account</h3>
-                        <p class="text-xs text-muted mt-2 mb-5">Each account gets its own gallery link and starts with an empty album list. Albums are never shared between accounts.</p>
-                        <form id="user-form" class="grid sm:grid-cols-2 gap-3" novalidate>
-                            <input id="u-name" type="text" placeholder="Name / Gallery name" class="input">
-                            <div>
-                                <input id="u-slug" type="text" placeholder="gallery-link" class="input font-mono text-xs">
-                                <p id="u-slug-preview" class="text-[11px] text-muted mt-1.5 truncate"></p>
-                            </div>
-                            <input id="u-email" type="email" autocomplete="off" placeholder="Email" class="input">
-                            <div class="relative">
-                                <input id="u-password" type="password" autocomplete="new-password" placeholder="Password (6+ chars)" class="input pr-12">
-                                <button type="button" onclick="togglePw('u-password', this)" class="absolute right-1.5 top-1/2 -translate-y-1/2 btn-icon w-9 h-9" aria-label="Show password"><i class="fa-regular fa-eye text-xs"></i></button>
-                            </div>
-                            <button id="u-btn" type="submit" class="btn-primary h-12 sm:col-span-2 sm:justify-self-start"><i class="fa-solid fa-user-plus text-xs"></i> Create account</button>
-                        </form>
-                    </div>
-                    <div class="card overflow-hidden rise" style="--d:80ms">
-                        <div class="px-6 sm:px-8 py-5 border-b border-line flex items-center justify-between">
-                            <h3 class="font-display text-2xl">All accounts</h3>
-                            <span id="user-count" class="text-xs text-muted"></span>
-                        </div>
-                        <div id="user-list" class="divide-y divide-line"></div>
                     </div>
                 </section>
             </main>
@@ -528,26 +379,47 @@ tailwind.config = {
 <!-- ============================== SCRIPT ============================== -->
 <script>
 /* -------------------- CONFIG -------------------- */
-const CONFIG = { REFRESH_MS: 5000, DOWNLOAD_CONCURRENCY: 4 };
-const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
-const SESSION_KEY = 'tg_session_v3';
+const CONFIG = {
+    GAS_API_URL: "https://script.google.com/macros/s/AKfycbyBLpMDiIIQ0PO7uqj0kK8HdHkLwCshrBQWHaCYqM9vLbFbTzUPiXeEVYlEX-J9V2ZKBQ/exec",
+    REFRESH_MS: 5000,
+    SESSION_HOURS: 8,
+    DOWNLOAD_CONCURRENCY: 4,
+    DEFAULT_ALBUM: { name: "Toy Gallery 2000's", folderId: "" },
+    // ⚙️ นำคอนฟิกจาก Firebase Console มาวางตรงนี้
+    FIREBASE_CONFIG: {
+         apiKey: "AIzaSyC74s9gciHx68bAPNDue25wMCAhLiau8C0",
+         authDomain: "toy-gallery-2000s-4ea89.firebaseapp.com",
+         databaseURL: "https://toy-gallery-2000s-4ea89-default-rtdb.asia-southeast1.firebasedatabase.app/",
+         projectId: "toy-gallery-2000s-4ea89",
+         storageBucket: "toy-gallery-2000s-4ea89.firebasestorage.app",
+         messagingSenderId: "712072738636",
+         appId: "1:712072738636:web:26cf6c0200fc1ddcc641e9",
+         measurementId: "G-S7JX8BPJS6"
+    },
+    ADMIN_ACCOUNTS: [
+        { email: "admin@toygallery.com", passwordHash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" } // demo pw: admin
+    ]
+};
 
-/* Firebase refs */
-const auth = firebase.auth();
-const db = firebase.database();
-const storage = firebase.storage();
+const DEMO_MODE = !CONFIG.GAS_API_URL || CONFIG.GAS_API_URL.includes('xxxx');
+const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
+let db = null;
+
+// Initialize Firebase if configured
+if (CONFIG.FIREBASE_CONFIG && CONFIG.FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
+    try {
+        firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+        db = firebase.database();
+    } catch(e) { console.error("Firebase Init Error:", e); }
+}
 
 /* -------------------- HELPERS -------------------- */
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pageUrl = () => location.href.split('#')[0];
 const keyOf = p => p.id || p.url;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
-const pad = n => String(n).padStart(2, '0');
-const slugify = s => String(s || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
-const randomSlug = () => 'gallery-' + Math.random().toString(36).slice(2, 7);
-const galleryUrl = slug => `${location.origin}${location.pathname}${slug ? `?g=${encodeURIComponent(slug)}` : ''}`;
-const qrSrc = (url, size = 300) => `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&color=2e241d&bgcolor=ffffff&data=${encodeURIComponent(url)}`;
-const LOADING_ROW = '<p class="px-6 py-12 text-center text-sm text-muted"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Loading…</p>';
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'photos';
 
 let toastTimer;
 function toast(msg) {
@@ -555,77 +427,93 @@ function toast(msg) {
     t.textContent = msg;
     t.classList.remove('hide');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.add('hide'), 3000);
+    toastTimer = setTimeout(() => t.classList.add('hide'), 2600);
 }
-async function copyText(text, msg = 'Link copied') {
-    try { await navigator.clipboard.writeText(text); toast(msg); }
-    catch (e) { prompt('Copy this link:', text); }
+
+/* -------------------- STATE -------------------- */
+let albums = [];
+let photos = [];
+let lastSignature = null;
+let lastSync = null;
+let pollTimer = null;
+let initialized = false;
+let stream = null;
+let lbIndex = 0;
+let selecting = false;
+let busy = false;
+let readyFiles = [];
+let resultList = [];
+let fetchSeq = 0;
+const selected = new Set();
+const revealed = new Set();
+const loadedSet = new Set();
+const DEFAULT_LABELS = {};
+const SKELETON = '<div class="aspect-[4/5] rounded-xl shimmer"></div>'.repeat(4);
+
+// Sync Firebase Data
+function initFirebaseRealtimeSync() {
+    if (!db) {
+        albums = loadLocalAlbums();
+        return;
+    }
+    db.ref('albums').on('value', snapshot => {
+        const data = snapshot.val();
+        if (data) {
+            albums = Array.isArray(data) ? data : Object.values(data);
+        } else {
+            const d = CONFIG.DEFAULT_ALBUM;
+            albums = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
+        }
+        resetGallery();
+        if (!$('app-admin').classList.contains('hidden')) renderAlbums();
+    });
 }
-function setBusy(btn, on, label) {
-    if (on) {
-        btn.dataset.label = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> ${label || 'Saving…'}`;
+
+function loadLocalAlbums() {
+    let list = null;
+    try {
+        const saved = JSON.parse(localStorage.getItem('tg_albums'));
+        if (Array.isArray(saved)) list = saved;
+    } catch (e) {}
+
+    if (list === null) {
+        const d = CONFIG.DEFAULT_ALBUM;
+        list = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
+    }
+
+    let found = false;
+    list.forEach(a => {
+        a.isActive = !!a.isActive && !found;
+        if (a.isActive) found = true;
+    });
+    return list;
+}
+
+function saveAlbums() {
+    if (db) {
+        db.ref('albums').set(albums);
     } else {
-        btn.disabled = false;
-        if (btn.dataset.label) btn.innerHTML = btn.dataset.label;
+        localStorage.setItem('tg_albums', JSON.stringify(albums));
     }
 }
-function togglePw(id, btn) {
-    const input = $(id);
-    const show = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    btn.querySelector('i').className = `fa-regular ${show ? 'fa-eye-slash' : 'fa-eye'} text-xs`;
-}
 
-/* -------------------- SESSION -------------------- */
-let session = loadSession();
-let ownerPasswordCache = null; // ใช้ชั่วครั้งเดียวตอน owner สร้าง account ใหม่
+const activeAlbum = () => albums.find(a => a.isActive);
 
-function loadSession() {
-    try {
-        const s = JSON.parse(localStorage.getItem(SESSION_KEY));
-        if (s && s.exp > Date.now()) return s;
-    } catch (e) {}
-    localStorage.removeItem(SESSION_KEY);
-    return null;
-}
-function saveSession(s) {
-    session = s;
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ ...s, exp: Date.now() + 7 * 24 * 3600 * 1000 }));
-}
-function clearSession() { session = null; localStorage.removeItem(SESSION_KEY); }
-const isOwner = () => session?.role === 'owner';
-
-/* -------------------- GUEST STATE -------------------- */
-let gallerySlug = new URLSearchParams(location.search).get('g') || '';
-let gallery = null, liveAlbum = null, galleryMissing = false;
-let photos = [], lastSignature = null, initialized = false, fetchSeq = 0;
-let galleryRef = null; // onSnapshot ref
-let stream = null, lbIndex = 0, selecting = false, busy = false, readyFiles = [], resultList = [];
-const selected = new Set(), revealed = new Set(), loadedSet = new Set();
-const DEFAULT_LABELS = {};
-const SKELETON = '<div class="aspect-[4/5] rounded-2xl shimmer"></div>'.repeat(8);
-
-function clearGalleryState() {
+function resetGallery() {
+    fetchSeq++;
     photos = [];
     resultList = [];
     lastSignature = null;
+    lastSync = null;
     initialized = false;
     selected.clear();
     revealed.clear();
     loadedSet.clear();
-    if (selecting) setSelectMode(false);
-    if ($('lightbox').classList.contains('open')) closeLightbox();
-}
-function resetGallery() {
-    fetchSeq++;
-    clearGalleryState();
-    gallery = null; liveAlbum = null; galleryMissing = false;
     $('gallery-grid').innerHTML = SKELETON;
-    $('photo-count').classList.add('hidden');
+    $('photo-count').textContent = '';
     $('btn-select').disabled = true;
     renderHeader();
+    fetchPhotos();
 }
 
 /* -------------------- VIEWS -------------------- */
@@ -634,60 +522,83 @@ function showView(id) {
     $(id).classList.remove('hidden');
     if (id !== 'view-gallery') setSelectMode(false);
     id === 'view-scan' ? startCamera() : stopCamera();
-    id === 'view-gallery' ? subscribeGallery() : unsubscribeGallery();
+    id === 'view-gallery' ? startPolling() : stopPolling();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function renderHeader() {
-    $('album-title').textContent = galleryMissing ? 'Gallery not found' : (liveAlbum?.name || gallery?.name || 'Loading');
-    $('gallery-name').textContent = gallery?.name || 'Event Gallery';
-    document.title = gallery ? `${liveAlbum?.name || gallery.name} · ${gallery.name}` : "Toy Gallery 2000's";
-    const url = galleryUrl(gallery?.slug || gallerySlug);
-    const qr = $('qr-img');
-    if (qr.dataset.url !== url) { qr.src = qrSrc(url); qr.dataset.url = url; }
+    const a = activeAlbum();
+    $('album-title').textContent = a ? a.name : 'No album yet';
+    document.title = a ? `${a.name} · Toy Gallery` : "Toy Gallery 2000's";
+    
+    // 🚨 1. นำ File ID ของรูป QR Code ใน Google Drive มาใส่ในเครื่องหมายคำพูดด้านล่าง
+    const qrCodeFileId = "1cWV2-kSCt-lIK1msIRKK3H5DcQEO7YNO"; 
+    
+    // 2. ระบบจะดึงรูปจาก Drive มาแสดง (w400 คือการกำหนดขนาดความกว้างให้โหลดไวขึ้น)
+    $('qr-img').src = `https://lh3.googleusercontent.com/d/${qrCodeFileId}=w400`;
 }
 
 function setStatus(text, state) {
     $('status-label').textContent = text;
-    const c = { live: 'bg-sage', error: 'bg-[#c0665a]', idle: 'bg-clay-light' }[state] || 'bg-clay-light';
-    $('sync-dot').className = `relative inline-flex w-2 h-2 rounded-full ${c}`;
-    $('sync-ping').className = `absolute inline-flex w-full h-full rounded-full ${c} ${state === 'live' ? 'animate-ping opacity-60' : 'opacity-0'}`;
+    const colors = { live: 'bg-emerald-600 animate-pulse', error: 'bg-red-600', idle: 'bg-clay-light' };
+    $('sync-dot').className = `w-1.5 h-1.5 rounded-full ${colors[state] || colors.idle}`;
 }
 
-/* -------------------- GALLERY REALTIME -------------------- */
-function subscribeGallery() {
-    unsubscribeGallery();
-    const seq = ++fetchSeq;
-    const ref = db.ref(`galleries/${gallerySlug || '_'}`);
-    galleryRef = ref;
-    ref.on('value', snap => {
-        if (seq !== fetchSeq) return;
-        const data = snap.val();
-        if (!data || !gallerySlug) {
-            galleryMissing = !!gallerySlug;
-            gallery = null; liveAlbum = null;
-            renderHeader();
-            applyPhotos([]);
-            setStatus(gallerySlug ? 'Gallery not found' : 'Waiting for the host', gallerySlug ? 'error' : 'idle');
-            return;
-        }
-        galleryMissing = false;
-        gallery = { name: data.name, slug: gallerySlug };
-        liveAlbum = data.albumId ? { id: data.albumId, name: data.albumName } : null;
-        renderHeader();
-        if (!liveAlbum) { applyPhotos([]); setStatus('Waiting for the host', 'idle'); return; }
-        const list = data.photos ? Object.entries(data.photos)
-            .map(([id, p]) => ({ id, ...p }))
-            .sort((a, b) => (b.created || 0) - (a.created || 0)) : [];
-        applyPhotos(list);
-        setStatus(`Live · ${list.length} ${list.length === 1 ? 'photo' : 'photos'}`, 'live');
-    }, err => {
-        console.error(err);
-        setStatus('Connection lost · Retrying…', 'error');
+/* -------------------- DATA -------------------- */
+function startPolling() {
+    fetchPhotos();
+    clearInterval(pollTimer);
+    pollTimer = setInterval(fetchPhotos, CONFIG.REFRESH_MS);
+}
+function stopPolling() { clearInterval(pollTimer); pollTimer = null; }
+
+function demoPhotos(seed = 'demo') {
+    const s = String(seed).slice(0, 10);
+    return Array.from({ length: 12 }, (_, i) => {
+        const base = `https://picsum.photos/seed/${s}-${i}`;
+        return {
+            id: `demo-${s}-${i}`,
+            name: `toy-gallery-${String(i + 1).padStart(2, '0')}.jpg`,
+            thumb: `${base}/600/750`,
+            url: `${base}/1200/1500`,
+            downloadUrl: `${base}/1200/1500`
+        };
     });
 }
-function unsubscribeGallery() {
-    if (galleryRef) { galleryRef.off('value'); galleryRef = null; }
+
+async function fetchPhotos() {
+    const a = activeAlbum();
+    const seq = fetchSeq;
+
+    if (!a) {
+        applyPhotos([]);
+        setStatus('No live album', 'idle');
+        return;
+    }
+
+    if (DEMO_MODE) {
+        applyPhotos(demoPhotos(a.folderId));
+        lastSync = new Date();
+        setStatus('Demo mode', 'idle');
+        return;
+    }
+
+    try {
+        const res = await fetch(`${CONFIG.GAS_API_URL}?folderId=${encodeURIComponent(a.folderId)}&t=${Date.now()}`);
+        const json = await res.json();
+
+        if (seq !== fetchSeq || activeAlbum()?.folderId !== a.folderId) return;
+
+        if (!json.success) throw new Error(json.message || 'API error');
+        applyPhotos(Array.isArray(json.data) ? json.data : []);
+        lastSync = new Date();
+        setStatus(`Live · Updated ${lastSync.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`, 'live');
+    } catch (err) {
+        if (seq !== fetchSeq) return;
+        console.error(err);
+        setStatus('Connection lost · Retrying…', 'error');
+        if (lastSignature === null) applyPhotos([]);
+    }
 }
 
 function applyPhotos(list) {
@@ -720,18 +631,16 @@ function tileHTML(p, i, delay) {
     const k = keyOf(p);
     const seen = revealed.has(k), loaded = loadedSet.has(k);
     return `
-    <figure class="tile ${seen ? 'in' : ''} ${selected.has(k) ? 'selected' : ''} group relative aspect-[4/5] overflow-hidden rounded-2xl bg-sand cursor-pointer select-none"
+    <figure class="tile ${seen ? 'in' : ''} ${selected.has(k) ? 'selected' : ''} group relative aspect-[4/5] overflow-hidden rounded-xl bg-sand cursor-pointer select-none"
             data-key="${esc(k)}" data-i="${i}" style="--d:${delay}ms">
         <div class="shimmer absolute inset-0 ${loaded ? 'done' : ''}"></div>
         <img src="${esc(p.thumb || p.url)}" alt="Photo ${i + 1}" loading="lazy" decoding="async" draggable="false"
              onload="imgLoaded(this)" class="${loaded ? 'loaded' : ''} absolute inset-0 w-full h-full object-cover">
-        <div class="tile-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/0 to-transparent">
-            <span class="absolute left-3.5 bottom-3.5 font-display text-sm tracking-widest text-cream/90">${pad(i + 1)}</span>
-        </div>
-        <button data-action="download" class="tile-dl absolute bottom-3 right-3 w-10 h-10 rounded-full bg-cream/90 backdrop-blur text-ink flex items-center justify-center shadow-md hover:bg-white" aria-label="Download">
+        <div class="tile-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent"></div>
+        <button data-action="download" class="tile-dl absolute bottom-2.5 right-2.5 w-9 h-9 rounded-full bg-cream/90 backdrop-blur text-ink flex items-center justify-center shadow-sm hover:bg-white" aria-label="Download">
             <i class="fa-solid fa-arrow-down text-xs"></i>
         </button>
-        <span class="tile-check absolute top-3 left-3 w-7 h-7 rounded-full border-2 border-white/90 bg-ink/20 backdrop-blur text-transparent flex items-center justify-center shadow">
+        <span class="tile-check absolute top-2.5 left-2.5 w-6 h-6 rounded-full border-2 border-white/90 bg-ink/15 backdrop-blur text-transparent flex items-center justify-center shadow">
             <i class="fa-solid fa-check text-[10px]"></i>
         </span>
     </figure>`;
@@ -746,28 +655,20 @@ function imgLoaded(img) {
 }
 
 function renderGallery() {
-    const state = galleryMissing ? 'x' : liveAlbum ? 'a' : 'n';
-    const sig = state + '|' + photos.map(keyOf).join('|');
+    const sig = photos.map(keyOf).join('|');
     if (sig === lastSignature) return;
     lastSignature = sig;
 
-    const count = $('photo-count');
-    count.textContent = plural(photos.length, 'photo');
-    count.classList.toggle('hidden', !photos.length);
+    $('photo-count').textContent = photos.length ? plural(photos.length, 'photo') : '';
     $('btn-select').disabled = !photos.length;
     const grid = $('gallery-grid');
 
     if (!photos.length) {
-        const [title, sub, icon] = galleryMissing
-            ? ['Gallery not found', 'Please check the link or scan the QR code again.', 'fa-link-slash']
-            : !liveAlbum
-                ? ['No live album', 'The host has not published an album yet.', 'fa-hourglass-half']
-                : ['No photos yet', 'New photos will appear here automatically.', 'fa-images'];
+        const live = activeAlbum();
         grid.innerHTML = `
             <div class="col-span-full py-24 text-center fade-in">
-                <span class="inline-flex w-16 h-16 rounded-full bg-white/70 border border-line items-center justify-center text-clay mb-5"><i class="fa-solid ${icon} text-xl"></i></span>
-                <p class="font-display text-3xl text-clay">${title}</p>
-                <p class="text-sm text-muted mt-2">${sub}</p>
+                <p class="font-display italic text-3xl text-clay">${live ? 'No photos yet' : 'No live album'}</p>
+                <p class="text-sm text-muted mt-2">${live ? 'New photos will appear here automatically.' : 'Please set an album live from the admin panel.'}</p>
             </div>`;
         return;
     }
@@ -780,7 +681,8 @@ function onGridClick(e) {
     const tile = e.target.closest('.tile');
     if (!tile) return;
     const isResult = !!e.target.closest('#result-grid');
-    const p = (isResult ? resultList : photos)[+tile.dataset.i];
+    const list = isResult ? resultList : photos;
+    const p = list[+tile.dataset.i];
     if (!p) return;
     if (e.target.closest('[data-action="download"]')) { e.stopPropagation(); return downloadPhotos([p]); }
     if (selecting && !isResult) return toggleSelect(tile);
@@ -791,9 +693,9 @@ $('gallery-grid').addEventListener('click', onGridClick);
 $('result-grid').addEventListener('click', onGridClick);
 
 async function shareGallery() {
-    const url = galleryUrl(gallery?.slug || gallerySlug);
+    const url = pageUrl();
     if (navigator.share) { try { await navigator.share({ title: document.title, url }); } catch (e) {} }
-    else copyText(url);
+    else { try { await navigator.clipboard.writeText(url); toast('Link copied'); } catch (e) { toast('Unable to copy link'); } }
 }
 
 /* -------------------- SELECTION -------------------- */
@@ -806,6 +708,7 @@ function setSelectMode(on) {
     $('btn-select-all').classList.toggle('hidden', !on);
     updateSelectionUI();
 }
+
 function toggleSelect(tile) {
     const k = tile.dataset.key;
     selected.has(k) ? selected.delete(k) : selected.add(k);
@@ -813,6 +716,7 @@ function toggleSelect(tile) {
     if (navigator.vibrate) navigator.vibrate(8);
     updateSelectionUI();
 }
+
 function selectAll() {
     const all = selected.size === photos.length;
     selected.clear();
@@ -820,7 +724,9 @@ function selectAll() {
     $('gallery-grid').querySelectorAll('.tile').forEach(t => t.classList.toggle('selected', selected.has(t.dataset.key)));
     updateSelectionUI();
 }
+
 function clearSelection() { setSelectMode(false); }
+
 function updateSelectionUI() {
     const n = selected.size;
     $('sel-count').textContent = `${n} selected`;
@@ -829,25 +735,38 @@ function updateSelectionUI() {
     $('btn-select-all').textContent = n && n === photos.length ? 'Deselect all' : 'Select all';
     $('action-bar').classList.toggle('show', selecting);
     $('guest-main').classList.toggle('pb-28', selecting);
-    updateToTop();
 }
+
 async function downloadSelected() {
-    const ok = await downloadPhotos(photos.filter(p => selected.has(keyOf(p))));
+    const list = photos.filter(p => selected.has(keyOf(p)));
+    const ok = await downloadPhotos(list);
     if (ok) setSelectMode(false);
 }
-function updateToTop() { $('to-top').classList.toggle('show', window.scrollY > 900 && !selecting); }
-window.addEventListener('scroll', updateToTop, { passive: true });
 
 /* -------------------- DOWNLOAD ENGINE -------------------- */
 async function photoToFile(p, idx) {
-    const r = await fetch(p.url, { mode: 'cors' });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const blob = await r.blob();
+    let blob;
+    if (DEMO_MODE || !p.id || String(p.id).startsWith('demo-')) {
+        const r = await fetch(p.downloadUrl || p.url, { mode: 'cors' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        blob = await r.blob();
+    } else {
+        const a = activeAlbum();
+        if (!a) throw new Error('No live album');
+        const r = await fetch(`${CONFIG.GAS_API_URL}?action=file&folderId=${encodeURIComponent(a.folderId)}&id=${encodeURIComponent(p.id)}`);
+        const j = await r.json();
+        if (!j.success) throw new Error(j.message || 'File error');
+        const bin = atob(j.data);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        blob = new Blob([bytes], { type: j.mimeType || 'image/jpeg' });
+    }
     const type = blob.type || 'image/jpeg';
     const ext = (type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
     const base = (p.name || `photo-${idx + 1}`).replace(/\.[^.]+$/, '');
     return new File([blob], `${base}.${ext}`, { type });
 }
+
 async function mapLimit(items, limit, fn, onTick) {
     const out = new Array(items.length);
     let next = 0, done = 0;
@@ -861,6 +780,7 @@ async function mapLimit(items, limit, fn, onTick) {
     await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
     return out;
 }
+
 function dedupeNames(files) {
     const used = {};
     return files.map(f => {
@@ -870,6 +790,7 @@ function dedupeNames(files) {
         return new File([f], `${f.name.slice(0, dot)}-${count}${f.name.slice(dot)}`, { type: f.type });
     });
 }
+
 function saveBlob(blob, name) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -877,6 +798,7 @@ function saveBlob(blob, name) {
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
+
 function setProgress(done, total, label) {
     const bar = $('progress');
     const btns = ['dl-btn', 'lb-download', 'btn-dl-results'];
@@ -892,6 +814,7 @@ function setProgress(done, total, label) {
     const text = label || (total > 1 ? `Preparing ${done}/${total}` : 'Preparing…');
     btns.forEach(id => { $(id).innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> ${text}`; $(id).disabled = true; });
 }
+
 async function downloadPhotos(list) {
     list = (list || []).filter(Boolean);
     if (busy || !list.length) return false;
@@ -915,7 +838,7 @@ async function downloadPhotos(list) {
             const zip = new JSZip();
             files.forEach(f => zip.file(f.name, f));
             const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
-            saveBlob(blob, `${slugify(liveAlbum?.name) || 'photos'}-${files.length}-photos.zip`);
+            saveBlob(blob, `${slug(activeAlbum()?.name)}-${files.length}-photos.zip`);
             toast(`${plural(files.length, 'photo')} downloaded`);
         }
         if (failed) setTimeout(() => toast(`${plural(failed, 'photo')} could not be downloaded`), 1500);
@@ -929,11 +852,13 @@ async function downloadPhotos(list) {
     }
     return ok;
 }
+
 function openSheet() {
     $('ready-count').textContent = `${plural(readyFiles.length, 'photo')} prepared`;
     $('ready-sheet').classList.add('open');
 }
 function closeSheet() { $('ready-sheet').classList.remove('open'); }
+
 async function shareReady() {
     try {
         await navigator.share({ files: readyFiles, title: document.title });
@@ -946,28 +871,8 @@ async function shareReady() {
 }
 
 /* -------------------- LIGHTBOX -------------------- */
-function buildThumbs() {
-    $('lb-thumbs').innerHTML = photos.map((p, i) => `
-        <button data-i="${i}" class="lb-thumb shrink-0 w-11 h-14 sm:w-12 sm:h-16 rounded-lg overflow-hidden bg-white/10" aria-label="Photo ${i + 1}">
-            <img src="${esc(p.thumb || p.url)}" loading="lazy" alt="" class="w-full h-full object-cover">
-        </button>`).join('');
-}
-$('lb-thumbs').addEventListener('click', e => {
-    const b = e.target.closest('.lb-thumb');
-    if (!b || +b.dataset.i === lbIndex) return;
-    lbIndex = +b.dataset.i;
-    setLbImage(false);
-});
-function markThumb() {
-    $('lb-thumbs').querySelectorAll('.lb-thumb').forEach(b => {
-        const on = +b.dataset.i === lbIndex;
-        b.classList.toggle('active', on);
-        if (on) b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-    });
-}
 function openLightbox(i) {
     lbIndex = i;
-    buildThumbs();
     setLbImage(true);
     $('lightbox').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -985,6 +890,7 @@ function setLbImage(instant) {
     const p = photos[lbIndex];
     if (!p) return closeLightbox();
     const img = $('lb-img');
+    const pad = n => String(n).padStart(2, '0');
     $('lb-counter').textContent = `${pad(lbIndex + 1)} — ${pad(photos.length)}`;
     img.classList.add('swap');
     const apply = () => {
@@ -993,7 +899,6 @@ function setLbImage(instant) {
         if (img.complete && img.naturalWidth) requestAnimationFrame(() => img.classList.remove('swap'));
     };
     instant ? apply() : setTimeout(apply, 180);
-    markThumb();
     [1, -1].forEach(d => {
         const n = photos[(lbIndex + d + photos.length) % photos.length];
         if (n) new Image().src = n.url;
@@ -1047,466 +952,175 @@ function renderResults() {
     const grid = $('result-grid');
     grid.innerHTML = resultList.length
         ? resultList.map((p, i) => tileHTML(p, i, i * 80)).join('')
-        : `<p class="col-span-full font-display text-2xl text-clay py-16 text-center">No matching photos found.</p>`;
+        : `<p class="col-span-full font-display italic text-2xl text-clay py-16 text-center">No matching photos found.</p>`;
     grid.querySelectorAll('.tile').forEach(t => t.classList.remove('in'));
     observeTiles(grid);
 }
 
-/* ==================== ADMIN ==================== */
-let myAlbums = [];
-let users = [];
-const TAB_TITLES = { dashboard: 'Overview', albums: 'Albums', account: 'Account', users: 'Users' };
+/* -------------------- ADMIN: AUTH -------------------- */
+async function sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+window.hashPassword = async pw => console.log(await sha256(pw));
 
-/* ---------- Open / close ---------- */
+let failedAttempts = 0, lockUntil = 0;
+
+function getSession() {
+    try {
+        const s = JSON.parse(sessionStorage.getItem('tg_session'));
+        if (s && s.exp > Date.now()) return s;
+    } catch (e) {}
+    sessionStorage.removeItem('tg_session');
+    return null;
+}
+function showLoginError(msg) { const el = $('login-error'); el.textContent = msg; el.classList.remove('hidden'); }
+
+$('login-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    $('login-error').classList.add('hidden');
+    if (Date.now() < lockUntil) return showLoginError(`Too many attempts. Try again in ${Math.ceil((lockUntil - Date.now()) / 1000)}s.`);
+
+    const email = $('login-email').value.trim().toLowerCase();
+    const password = $('login-password').value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showLoginError('Please enter a valid email address.');
+    if (!password) return showLoginError('Please enter your password.');
+
+    const btn = $('login-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing in…';
+    const hash = await sha256(password);
+    const ok = CONFIG.ADMIN_ACCOUNTS.some(a => a.email.toLowerCase() === email && a.passwordHash === hash);
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+
+    if (!ok) {
+        if (++failedAttempts >= 5) { lockUntil = Date.now() + 30000; failedAttempts = 0; }
+        return showLoginError('Incorrect email or password.');
+    }
+    failedAttempts = 0;
+    sessionStorage.setItem('tg_session', JSON.stringify({ email, exp: Date.now() + CONFIG.SESSION_HOURS * 3600000 }));
+    $('login-password').value = '';
+    showAdminShell();
+});
+
+function togglePassword() {
+    const input = $('login-password');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    $('pw-eye').className = `fa-regular ${show ? 'fa-eye-slash' : 'fa-eye'} text-xs`;
+}
+function logout() { sessionStorage.removeItem('tg_session'); showLogin(); toast('Signed out'); }
+
+/* -------------------- ADMIN: SHELL -------------------- */
 function openAdmin() {
-    stopCamera(); unsubscribeGallery(); closeLightbox(); setSelectMode(false);
+    stopCamera(); stopPolling(); closeLightbox(); setSelectMode(false);
     $('app-guest').classList.add('hidden');
     $('app-admin').classList.remove('hidden');
+    getSession() ? showAdminShell() : showLogin();
     window.scrollTo(0, 0);
-    if (session?.uid && auth.currentUser) showAdminShell();
-    else showAuth();
 }
-function exitAdmin(ownGallery) {
+function exitAdmin() {
     $('app-admin').classList.add('hidden');
     $('app-guest').classList.remove('hidden');
-    if (ownGallery && session && session.slug !== gallerySlug) {
-        gallerySlug = session.slug;
-        history.replaceState(null, '', galleryUrl(gallerySlug));
-        resetGallery();
-    }
     lastSignature = null;
     renderHeader();
     showView('view-gallery');
 }
-
-/* ---------- Auth ---------- */
-let authMode = 'login';
-function showAuth() {
+function showLogin() {
     $('admin-shell').classList.add('hidden');
     $('login-screen').classList.remove('hidden');
-    setAuthMode('login');
-    setTimeout(() => $(authMode === 'setup' ? 'auth-name' : 'auth-email').focus(), 50);
+    setTimeout(() => $('login-email').focus(), 50);
 }
-function setAuthMode(mode) {
-    authMode = mode;
-    const setup = mode === 'setup';
-    $('setup-fields').classList.toggle('hidden', !setup);
-    $('auth-title').textContent = setup ? 'Create owner account' : 'Welcome back';
-    $('auth-sub').textContent = setup ? 'First-time setup · this account can add other users' : 'Sign in to manage your galleries';
-    $('auth-btn').textContent = setup ? 'Create account' : 'Sign in';
-    $('auth-password').autocomplete = setup ? 'new-password' : 'current-password';
-    $('auth-error').classList.add('hidden');
-    $('auth-toggle').textContent = setup ? 'Already have an account? Sign in' : 'First time? Create owner account';
-}
-function showAuthError(msg) { $('auth-error').textContent = msg; $('auth-error').classList.remove('hidden'); }
-
-$('auth-toggle').addEventListener('click', () => setAuthMode(authMode === 'login' ? 'setup' : 'login'));
-
-$('auth-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    $('auth-error').classList.add('hidden');
-    const setup = authMode === 'setup';
-    const email = $('auth-email').value.trim().toLowerCase();
-    const password = $('auth-password').value;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthError('Please enter a valid email address.');
-    if (setup ? password.length < 6 : !password) return showAuthError(setup ? 'Password must be at least 6 characters.' : 'Please enter your password.');
-
-    const name = setup ? $('auth-name').value.trim() : '';
-    const slug = setup ? (slugify($('auth-slug').value) || slugify(name) || randomSlug()) : '';
-    if (setup && !name) return showAuthError('Please enter a gallery name.');
-
-    const btn = $('auth-btn');
-    setBusy(btn, true, setup ? 'Creating…' : 'Signing in…');
-    try {
-        if (setup) {
-            const cred = await auth.createUserWithEmailAndPassword(email, password);
-            await db.ref(`users/${cred.user.uid}`).set({ name, slug, email, role: 'owner', createdAt: Date.now() });
-            session = { uid: cred.user.uid, email, name, slug, role: 'owner' };
-            ownerPasswordCache = password;
-        } else {
-            const cred = await auth.signInWithEmailAndPassword(email, password);
-            const snap = await db.ref(`users/${cred.user.uid}`).once('value');
-            const data = snap.val();
-            if (!data) throw new Error('User profile not found. Please contact owner.');
-            session = { uid: cred.user.uid, email, ...data };
-            ownerPasswordCache = password;
-        }
-        saveSession(session);
-        $('auth-password').value = '';
-        showAdminShell();
-        toast(setup ? 'Owner account created' : `Welcome, ${session.name}`);
-    } catch (err) {
-        showAuthError(err.message);
-    } finally {
-        setBusy(btn, false);
-    }
-});
-
-function logout() {
-    auth.signOut();
-    clearSession();
-    ownerPasswordCache = null;
-    myAlbums = []; users = [];
-    showAuth();
-    toast('Signed out');
-}
-
-/* ---------- Shell ---------- */
 function showAdminShell() {
     $('login-screen').classList.add('hidden');
     $('admin-shell').classList.remove('hidden');
-    renderMe();
-    renderAccount();
+    $('admin-email').textContent = getSession()?.email || '';
+    renderAlbums();
     switchTab('albums');
 }
-function renderMe() {
-    if (!session) return;
-    $('me-name').textContent = session.name;
-    $('me-email').textContent = session.email;
-    $('me-role').textContent = session.role === 'owner' ? 'Owner' : 'Member';
-    $('me-avatar').textContent = (session.name || session.email).trim().charAt(0).toUpperCase();
-    document.querySelectorAll('[data-owner]').forEach(el => el.classList.toggle('hidden', !isOwner()));
-}
 function switchTab(tab) {
-    if (tab === 'users' && !isOwner()) tab = 'albums';
     document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
     $(`tab-${tab}`).classList.remove('hidden');
     document.querySelectorAll('.admin-tab[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-    $('admin-title').textContent = TAB_TITLES[tab];
-    if (tab === 'albums') loadMyAlbums();
-    if (tab === 'dashboard') loadStats();
-    if (tab === 'users') loadUsers();
-    if (tab === 'account') renderAccount();
+    $('admin-title').textContent = tab === 'dashboard' ? 'Overview' : 'Albums';
+    if (tab === 'dashboard') fetchPhotos().then(renderStats);
 }
 
-/* ---------- Overview ---------- */
-async function loadStats() {
-    renderAccount();
-    if (!session?.slug) return;
-    const snap = await db.ref(`galleries/${session.slug}`).once('value');
-    const g = snap.val() || {};
-    const albumSnap = await db.ref(`albums/${session.uid}`).once('value');
-    const albums = albumSnap.val() || {};
-    myAlbums = Object.entries(albums).map(([id, a]) => ({ id, ...a }));
-    $('stat-albums').textContent = myAlbums.length;
-    $('stat-active').textContent = g.albumName || 'None';
-    $('stat-photos').textContent = g.photos ? Object.keys(g.photos).length : '–';
-    $('stat-sync').textContent = `Last checked ${new Date().toLocaleString('en-GB')}`;
+/* -------------------- ADMIN: ALBUMS -------------------- */
+function parseFolderId(input) {
+    const v = input.trim();
+    const m = v.match(/folders\/([a-zA-Z0-9_-]+)/) || v.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : v;
 }
 
-/* ---------- Account ---------- */
-function renderAccount() {
-    if (!session) return;
-    const url = galleryUrl(session.slug);
-    document.querySelectorAll('.js-link-text').forEach(el => el.textContent = url);
-    document.querySelectorAll('.js-link-open').forEach(el => el.href = url);
-    $('acc-name').textContent = session.name;
-    $('acc-qr').src = qrSrc(url, 400);
-    $('acc-qr-dl').href = qrSrc(url, 1000);
-}
-function copyMyLink() { if (session) copyText(galleryUrl(session.slug)); }
-
-$('pw-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const current = $('pw-current').value, password = $('pw-new').value, confirmPw = $('pw-confirm').value;
-    if (!current) return toast('Please enter your current password');
-    if (password.length < 6) return toast('New password must be at least 6 characters');
-    if (password !== confirmPw) return toast('New passwords do not match');
-    const btn = $('pw-btn');
-    setBusy(btn, true, 'Updating…');
-    try {
-        const cred = firebase.auth.EmailAuthProvider.credential(session.email, current);
-        await auth.currentUser.reauthenticateWithCredential(cred);
-        await auth.currentUser.updatePassword(password);
-        ownerPasswordCache = password;
-        $('pw-form').reset();
-        toast('Password updated');
-    } catch (err) { toast(err.message); }
-    finally { setBusy(btn, false); }
-});
-
-/* ---------- Albums ---------- */
-async function loadMyAlbums() {
-    if (!session?.uid) return;
-    $('album-list').innerHTML = LOADING_ROW;
-    const snap = await db.ref(`albums/${session.uid}`).once('value');
-    const data = snap.val() || {};
-    myAlbums = Object.entries(data).map(([id, a]) => ({ id, ...a })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    renderAlbums();
-}
-
-function storagePath(slug, albumId, photoId, ext) {
-    return `galleries/${slug}/${albumId}/${photoId}.${ext}`;
-}
-
-async function uploadPhotos(files, albumId) {
-    if (!session || !files.length) return;
-    const slug = session.slug;
-    const updates = {};
-    let uploaded = 0;
-    for (const file of Array.from(files)) {
-        const photoId = db.ref().push().key;
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-        const path = storagePath(slug, albumId, photoId, ext);
-        const ref = storage.ref(path);
-        await ref.put(file);
-        const url = await ref.getDownloadURL();
-        const thumb = url; // ใช้ full URL เป็น thumb ไปก่อน หรือจะ resize ทีหลัง
-        const photo = { name: file.name, url, thumb, created: Date.now(), storagePath: path };
-        updates[`albums/${session.uid}/${albumId}/photos/${photoId}`] = photo;
-        uploaded++;
-    }
-    if (uploaded) {
-        await db.ref().update(updates);
-        await syncGalleryPublic(slug);
-        toast(`${plural(uploaded, 'photo')} uploaded`);
-    }
-}
-
-async function syncGalleryPublic(slug) {
-    if (!session) return;
-    const snap = await db.ref(`albums/${session.uid}`).once('value');
-    const albums = snap.val() || {};
-    const live = Object.entries(albums).find(([id, a]) => a.isActive);
-    if (!live) {
-        await db.ref(`galleries/${slug}`).update({ uid: session.uid, name: session.name, albumId: null, albumName: null, photos: null });
-        return;
-    }
-    const [albumId, album] = live;
-    const photos = album.photos ? Object.entries(album.photos)
-        .map(([id, p]) => ({ id, name: p.name, url: p.url, thumb: p.thumb, created: p.created }))
-        .sort((a, b) => (b.created || 0) - (a.created || 0)) : [];
-    const photosObj = {};
-    photos.forEach(p => { photosObj[p.id] = { name: p.name, url: p.url, thumb: p.thumb, created: p.created }; });
-    await db.ref(`galleries/${slug}`).set({ uid: session.uid, name: session.name, albumId, albumName: album.name, photos: photosObj });
-}
-
-async function setLiveAlbum(id) {
-    if (!session) return;
-    const updates = {};
-    myAlbums.forEach(a => { updates[`albums/${session.uid}/${a.id}/isActive`] = (a.id === id); });
-    await db.ref().update(updates);
-    myAlbums = myAlbums.map(a => ({ ...a, isActive: a.id === id }));
-    renderAlbums();
-    await syncGalleryPublic(session.slug);
-    toast('Live album updated on all devices');
-}
-
-async function deleteAlbum(id) {
-    if (!confirm('Delete this album? Photos in storage will be removed.')) return;
-    const album = myAlbums.find(a => a.id === id);
-    if (album?.photos) {
-        for (const [pid, p] of Object.entries(album.photos)) {
-            if (p.storagePath) try { await storage.ref(p.storagePath).delete(); } catch (e) {}
-        }
-    }
-    await db.ref(`albums/${session.uid}/${id}`).remove();
-    myAlbums = myAlbums.filter(a => a.id !== id);
-    renderAlbums();
-    await syncGalleryPublic(session.slug);
-    toast(album?.isActive ? 'Live album removed' : 'Album deleted');
-}
-
-$('album-form').addEventListener('submit', async e => {
+$('album-form').addEventListener('submit', e => {
     e.preventDefault();
     const name = $('album-name').value.trim();
-    if (!name) return toast('Please enter an album name');
-    const btn = $('album-btn');
-    setBusy(btn, true, 'Creating…');
-    try {
-        const id = db.ref().push().key;
-        const album = { name, isActive: true, createdAt: Date.now(), photos: {} };
-        // ปิดอัลบั้มอื่น
-        const updates = {};
-        myAlbums.forEach(a => { updates[`albums/${session.uid}/${a.id}/isActive`] = false; });
-        updates[`albums/${session.uid}/${id}`] = album;
-        await db.ref().update(updates);
-        myAlbums = myAlbums.map(a => ({ ...a, isActive: false })).concat({ id, ...album });
-        renderAlbums();
-        await syncGalleryPublic(session.slug);
-        $('album-name').value = '';
-        toast('Album created · upload photos below');
-    } catch (err) { toast(err.message); }
-    finally { setBusy(btn, false); }
+    const folderId = parseFolderId($('album-folder').value);
+    if (!name || !folderId) return toast('Please fill in both fields');
+    if (!/^[a-zA-Z0-9_-]{10,}$/.test(folderId)) return toast('Invalid folder ID');
+    if (albums.some(a => a.folderId === folderId)) return toast('This folder already exists');
+
+    albums.forEach(a => a.isActive = false);
+    albums.push({ id: Date.now(), name, folderId, isActive: true });
+    saveAlbums();
+
+    $('album-name').value = '';
+    $('album-folder').value = '';
+    renderAlbums();
+    toast('Album added and set live');
 });
 
-$('album-list').addEventListener('click', async e => {
-    const b = e.target.closest('[data-act]');
-    if (!b) return;
-    const id = b.dataset.id;
-    if (b.dataset.act === 'live') await setLiveAlbum(id);
-    else if (b.dataset.act === 'delete') await deleteAlbum(id);
-    else if (b.dataset.act === 'upload') $(`upload-${id}`).click();
-});
+function setActiveAlbum(id) {
+    albums.forEach(a => a.isActive = a.id === id);
+    saveAlbums();
+    renderAlbums();
+    toast('Live album updated');
+}
 
-$('album-list').addEventListener('change', async e => {
-    const input = e.target.closest('input[type="file"]');
-    if (!input?.files?.length) return;
-    const id = input.dataset.id;
-    const btn = input.nextElementSibling;
-    setBusy(btn, true, 'Uploading…');
-    try { await uploadPhotos(input.files, id); }
-    catch (err) { toast(err.message); }
-    finally { setBusy(btn, false); input.value = ''; }
-});
+function deleteAlbum(id) {
+    if (!confirm('Delete this album? Photos in Google Drive will not be affected.')) return;
+    const wasActive = albums.find(a => a.id === id)?.isActive;
+    albums = albums.filter(a => a.id !== id);
+    saveAlbums();
+    if (wasActive) resetGallery();
+    renderAlbums();
+}
 
 function renderAlbums() {
-    $('album-list').innerHTML = myAlbums.length
-        ? myAlbums.map(a => {
-            const photoCount = a.photos ? Object.keys(a.photos).length : 0;
-            return `
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 sm:px-8 py-5 transition ${a.isActive ? 'bg-sand/70' : 'hover:bg-white/60'}">
-                <span class="hidden sm:flex w-11 h-11 shrink-0 rounded-2xl ${a.isActive ? 'bg-gradient-to-br from-clay-light via-clay to-clay-dark text-white' : 'bg-sand text-clay'} items-center justify-center"><i class="fa-regular fa-folder-open text-sm"></i></span>
+    $('album-list').innerHTML = albums.length
+        ? albums.map(a => `
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 px-6 sm:px-7 py-5 ${a.isActive ? 'bg-sand/60' : ''}">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2.5">
                         <p class="font-display text-xl truncate">${esc(a.name)}</p>
-                        ${a.isActive ? '<span class="chip chip-sage shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-sage animate-pulse"></span>Live</span>' : ''}
+                        ${a.isActive ? '<span class="shrink-0 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] bg-clay text-cream px-2.5 py-1 rounded-full"><span class="w-1 h-1 rounded-full bg-emerald-300"></span>Live</span>' : ''}
                     </div>
-                    <p class="text-xs text-muted mt-1">${plural(photoCount, 'photo')}</p>
+                    <p class="font-mono text-[11px] text-muted truncate mt-1">${esc(a.folderId)}</p>
                 </div>
-                <div class="flex gap-2 shrink-0 flex-wrap">
-                    ${a.isActive ? '' : `<button data-act="live" data-id="${esc(a.id)}" class="btn-ghost h-9">Set live</button>`}
-                    <input type="file" id="upload-${esc(a.id)}" data-id="${esc(a.id)}" multiple accept="image/*" class="hidden">
-                    <button data-act="upload" data-id="${esc(a.id)}" class="btn-ghost h-9"><i class="fa-solid fa-cloud-arrow-up text-xs"></i> Upload</button>
-                    <button data-act="delete" data-id="${esc(a.id)}" class="btn-danger" aria-label="Delete"><i class="fa-regular fa-trash-can text-xs"></i></button>
+                <div class="flex gap-2 shrink-0">
+                    ${a.isActive ? '' : `<button onclick="setActiveAlbum(${a.id})" class="btn-ghost h-9 flex-1 sm:flex-none">Set live</button>`}
+                    <a href="https://drive.google.com/drive/folders/${encodeURIComponent(a.folderId)}" target="_blank" rel="noopener" class="btn-ghost h-9 w-9 px-0" aria-label="Open in Drive"><i class="fa-brands fa-google-drive text-xs"></i></a>
+                    <button onclick="deleteAlbum(${a.id})" class="btn-ghost h-9 w-9 px-0 text-red-700 hover:bg-red-50 hover:border-red-200" aria-label="Delete"><i class="fa-regular fa-trash-can text-xs"></i></button>
                 </div>
-            </div>`;
-        }).join('')
-        : `<div class="px-6 py-14 text-center">
-               <span class="inline-flex w-14 h-14 rounded-full bg-sand text-clay items-center justify-center mb-4"><i class="fa-regular fa-folder text-lg"></i></span>
-               <p class="font-display text-xl">No albums yet</p>
-               <p class="text-xs text-muted mt-1">Create your first album above.</p>
-           </div>`;
+            </div>`).join('')
+        : `<p class="px-6 py-14 text-center font-display italic text-xl text-muted">No albums yet. Add your first Google Drive folder above.</p>`;
+    renderStats();
 }
 
-/* ---------- Users (Owner เท่านั้น) ---------- */
-async function loadUsers() {
-    if (!isOwner()) return;
-    $('user-list').innerHTML = LOADING_ROW;
-    const snap = await db.ref('users').once('value');
-    const data = snap.val() || {};
-    users = Object.entries(data).map(([id, u]) => ({ id, ...u }));
-    renderUsers();
+function renderStats() {
+    const a = activeAlbum();
+    $('stat-albums').textContent = albums.length;
+    $('stat-active').textContent = a ? a.name : 'None';
+    $('stat-photos').textContent = a ? photos.length : '–';
+    $('stat-sync').textContent = lastSync ? `Last synced ${lastSync.toLocaleString('en-GB')}${DEMO_MODE ? ' (demo mode)' : ''}` : '';
 }
-function renderUsers() {
-    $('user-count').textContent = plural(users.length, 'account');
-    $('user-list').innerHTML = users.map(u => {
-        const me = u.id === session.uid;
-        const owner = u.role === 'owner';
-        const url = galleryUrl(u.slug);
-        return `
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 sm:px-8 py-5 hover:bg-white/60 transition">
-            <span class="w-11 h-11 shrink-0 rounded-full ${owner ? 'bg-gradient-to-br from-clay-light via-clay to-clay-dark text-white' : 'bg-sand text-clay-dark'} font-display text-lg flex items-center justify-center">${esc((u.name || u.email).trim().charAt(0).toUpperCase())}</span>
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <p class="font-display text-xl truncate">${esc(u.name)}</p>
-                    <span class="chip ${owner ? 'chip-clay' : ''}">${owner ? 'Owner' : 'Member'}</span>
-                    ${me ? '<span class="chip chip-sage">You</span>' : ''}
-                </div>
-                <p class="text-xs text-muted truncate mt-1">${esc(u.email)}</p>
-                <p class="font-mono text-[11px] text-clay truncate mt-0.5">${esc(url)}</p>
-            </div>
-            <div class="flex gap-2 shrink-0">
-                <button data-uact="copy" data-url="${esc(url)}" class="btn-ghost h-9"><i class="fa-regular fa-copy text-xs"></i> Link</button>
-                <a href="${esc(url)}" target="_blank" rel="noopener" class="btn-ghost h-9 w-9 px-0" aria-label="Open gallery"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></a>
-                ${me || owner ? '' : `<button data-uact="delete" data-id="${esc(u.id)}" data-name="${esc(u.name)}" class="btn-danger" aria-label="Delete account"><i class="fa-regular fa-trash-can text-xs"></i></button>`}
-            </div>
-        </div>`;
-    }).join('');
-}
-
-$('user-list').addEventListener('click', async e => {
-    const b = e.target.closest('[data-uact]');
-    if (!b) return;
-    if (b.dataset.uact === 'copy') return copyText(b.dataset.url);
-    if (b.dataset.uact === 'delete') {
-        if (!confirm(`Delete "${b.dataset.name}"? Their albums and photos will be removed.`)) return;
-        b.disabled = true;
-        try {
-            // ลบรูปใน Storage ทั้งหมดของ user นี้
-            const albumSnap = await db.ref(`albums/${b.dataset.id}`).once('value');
-            const albums = albumSnap.val() || {};
-            for (const album of Object.values(albums)) {
-                if (album.photos) for (const p of Object.values(album.photos)) {
-                    if (p.storagePath) try { await storage.ref(p.storagePath).delete(); } catch (e) {}
-                }
-            }
-            await db.ref(`albums/${b.dataset.id}`).remove();
-            await db.ref(`galleries/${users.find(u => u.id === b.dataset.id)?.slug}`).remove();
-            await db.ref(`users/${b.dataset.id}`).remove();
-            // ลบ Firebase Auth user ต้องใช้ Admin SDK หรือให้ user นั้นลบตัวเอง ที่นี่ลบข้อมูลในระบบเราเท่านั้น
-            users = users.filter(u => u.id !== b.dataset.id);
-            renderUsers();
-            toast('Account removed from this app');
-        } catch (err) { b.disabled = false; toast(err.message); }
-    }
-});
-
-$('user-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    if (!ownerPasswordCache) return toast('Please sign in again to create accounts');
-    const name = $('u-name').value.trim();
-    const email = $('u-email').value.trim().toLowerCase();
-    const password = $('u-password').value;
-    const slug = slugify($('u-slug').value) || slugify(name) || randomSlug();
-    if (!name) return toast('Please enter a name');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('Please enter a valid email');
-    if (password.length < 6) return toast('Password must be at least 6 characters');
-    if (users.some(u => u.email === email)) return toast('This email is already in use');
-    if (users.some(u => u.slug === slug)) return toast('This gallery link is already taken');
-
-    const btn = $('u-btn');
-    setBusy(btn, true, 'Creating…');
-    try {
-        const ownerEmail = session.email;
-        const ownerPw = ownerPasswordCache;
-        // สร้าง user ใหม่
-        const cred = await auth.createUserWithEmailAndPassword(email, password);
-        const uid = cred.user.uid;
-        await db.ref(`users/${uid}`).set({ name, slug, email, role: 'member', createdAt: Date.now() });
-        // กลับมาเป็น owner
-        await auth.signInWithEmailAndPassword(ownerEmail, ownerPw);
-        // โหลด session owner ใหม่
-        const snap = await db.ref(`users/${session.uid}`).once('value');
-        session = { uid: session.uid, email: ownerEmail, ...snap.val() };
-        saveSession(session);
-        users.push({ id: uid, name, slug, email, role: 'member' });
-        renderUsers();
-        $('user-form').reset();
-        $('u-slug').dataset.touched = '';
-        $('u-slug-preview').textContent = 'Use a-z, 0-9 and - (e.g. wedding-studio)';
-        toast('Account created · starts with no albums');
-    } catch (err) { toast(err.message); }
-    finally { setBusy(btn, false); }
-});
-
-/* ---------- Gallery link field ---------- */
-function bindSlug(nameId, slugId, previewId) {
-    const n = $(nameId), s = $(slugId), p = $(previewId);
-    const update = () => {
-        const v = slugify(s.value) || slugify(n.value);
-        p.textContent = v ? galleryUrl(v) : 'Use a-z, 0-9 and - (e.g. wedding-studio)';
-    };
-    n.addEventListener('input', () => { if (!s.dataset.touched) s.value = slugify(n.value); update(); });
-    s.addEventListener('input', () => { s.dataset.touched = s.value ? '1' : ''; update(); });
-    update();
-}
-
-/* ---------- Auth state guard ---------- */
-auth.onAuthStateChanged(user => {
-    if (!user && $('app-admin').classList.contains('hidden') === false) {
-        // ถูก sign out จากที่อื่น ให้กลับไปหน้า login
-        clearSession();
-        showAuth();
-    }
-});
 
 /* -------------------- INIT -------------------- */
 window.addEventListener('DOMContentLoaded', () => {
     ['dl-btn', 'lb-download', 'btn-dl-results'].forEach(id => DEFAULT_LABELS[id] = $(id).innerHTML);
-    $('gallery-grid').innerHTML = SKELETON;
-    bindSlug('auth-name', 'auth-slug', 'auth-slug-preview');
-    bindSlug('u-name', 'u-slug', 'u-slug-preview');
+    initFirebaseRealtimeSync();
     renderHeader();
     showView('view-gallery');
 });
