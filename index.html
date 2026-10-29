@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F9F6F0">
+<meta name="theme-color" content="#FBFCFA">
 <title>Toy Gallery 2000's</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -11,18 +11,21 @@
 tailwind.config = {
     theme: { extend: {
         fontFamily: {
-            display: ['"Yeseva One"', '"Kanit"', 'sans-serif'],
-            serif:   ['"Yeseva One"', '"Kanit"', 'serif'],
+            display: ['"Jost"', '"Kanit"', 'serif'],
             sans:    ['"Kanit"', 'sans-serif']
         },
         colors: {
-            cream: '#F9F6F0', sand: '#F2EBE3', line: '#E5DCD0',
-            ink: '#2C241B', muted: '#85796E',
-            clay: { DEFAULT: '#A67B5B', dark: '#8B5E3C', light: '#C8A98E' }
+            cream: '#FBFCFA', 
+            sand: '#F1F4EC', 
+            line: '#D3DDC8',
+            ink: '#1F2A22', 
+            muted: '#6F7A68',
+            gold: { DEFAULT: '#74906B', dark: '#4A6444', light: '#BFCDB5' }
         },
         boxShadow: {
-            'soft': '0 4px 24px -8px rgba(0,0,0,0.06)',
-            'float': '0 12px 32px -12px rgba(139,94,60,0.4)',
+            'soft': '0 8px 32px -8px rgba(31,42,34,0.06)',
+            'float': '0 12px 32px -12px rgba(116,144,107,0.5)',
+            'gold-glow': '0 0 20px -5px rgba(116,144,107,0.3)',
         }
     }}
 }
@@ -30,23 +33,29 @@ tailwind.config = {
 <!-- JSZip & FontAwesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- Modern Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Yeseva+One&display=swap" rel="stylesheet">
+<!-- Luxury Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Jost:wght@150;400&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <style type="text/tailwindcss">
-    .btn-primary { @apply inline-flex items-center justify-center gap-2 h-11 px-7 rounded-full bg-clay text-white text-[14px] font-medium tracking-wide hover:bg-clay-dark hover:-translate-y-0.5 active:scale-[.97] transition-all duration-300 shadow-float disabled:opacity-50 disabled:pointer-events-none; }
-    .btn-ghost   { @apply inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full border border-line bg-white/70 backdrop-blur-sm text-[13px] font-medium text-ink hover:bg-white hover:border-clay/40 hover:shadow-soft active:scale-[.97] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none; }
-    .btn-icon    { @apply inline-flex items-center justify-center w-10 h-10 rounded-full text-muted hover:text-ink hover:bg-white hover:shadow-soft transition-all duration-300; }
-    .input       { @apply w-full h-12 px-5 rounded-2xl border border-line bg-white/80 text-sm text-ink placeholder:text-stone-400 focus:outline-none focus:ring-4 focus:ring-clay/15 focus:border-clay/60 focus:bg-white transition-all duration-300; }
-    .card        { @apply bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl shadow-soft; }
-    .eyebrow     { @apply text-[11px] uppercase tracking-[0.25em] text-clay font-medium; }
-    .label       { @apply block text-[13px] font-medium text-muted mb-2 ml-1; }
-    .admin-tab   { @apply flex items-center gap-3 px-4 h-11 rounded-2xl text-[14px] text-muted hover:text-ink hover:bg-white hover:shadow-sm transition-all whitespace-nowrap; }
-    .admin-tab.active { @apply bg-white text-clay font-medium shadow-sm border border-line/50; }
+    body         { @apply bg-gradient-to-br from-[#FBFCFA] via-[#F1F4EC] to-[#E1E8D8] text-ink min-h-screen selection:bg-gold/20 selection:text-gold-dark; }
+    .text-luxury { @apply bg-gradient-to-r from-[#5E7A57] via-[#74906B] to-[#5E7A57] bg-clip-text text-transparent inline-block; }
+    
+    .btn-primary { @apply inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-5 sm:px-7 rounded-full bg-gradient-to-r from-[#74906B] to-[#4A6444] text-white text-[13px] sm:text-[14px] font-medium tracking-wide hover:from-[#65815C] hover:to-[#3C5337] hover:-translate-y-0.5 active:scale-[.97] transition-all duration-300 shadow-float disabled:opacity-50 disabled:pointer-events-none; }
+    .btn-ghost   { @apply inline-flex items-center justify-center gap-2 h-10 px-4 sm:px-5 rounded-full border border-line bg-white/60 backdrop-blur-sm text-[12px] sm:text-[13px] font-medium text-ink hover:bg-white hover:border-gold/50 hover:shadow-gold-glow hover:text-gold-dark active:scale-[.97] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none; }
+    .btn-icon    { @apply inline-flex items-center justify-center w-10 h-10 rounded-full text-muted hover:text-gold-dark hover:bg-white hover:shadow-soft transition-all duration-300; }
+    
+    .input       { @apply w-full h-12 px-4 sm:px-5 rounded-xl sm:rounded-2xl border border-line bg-white/70 text-[13px] sm:text-sm text-ink placeholder:text-stone-400 focus:outline-none focus:ring-4 focus:ring-gold/15 focus:border-gold/60 focus:bg-white transition-all duration-300; }
+    .card        { @apply bg-white/70 backdrop-blur-xl border border-white/80 rounded-2xl sm:rounded-[2rem] shadow-soft relative overflow-hidden; }
+    .card::before { content: ''; @apply absolute inset-0 border border-gold/10 rounded-2xl sm:rounded-[2rem] pointer-events-none; }
+    
+    .eyebrow     { @apply text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-gold-dark font-medium; }
+    .label       { @apply block text-[12px] sm:text-[13px] font-medium text-muted mb-1.5 sm:mb-2 ml-1; }
+    .admin-tab   { @apply flex items-center gap-2 sm:gap-3 px-3 sm:px-4 h-10 sm:h-11 rounded-xl sm:rounded-2xl text-[13px] sm:text-[14px] text-muted hover:text-gold-dark hover:bg-white hover:shadow-sm transition-all whitespace-nowrap; }
+    .admin-tab.active { @apply bg-gradient-to-r from-gold to-gold-dark text-white font-medium shadow-md border-none hover:text-white; }
 </style>
 
 <style>
@@ -58,27 +67,34 @@ tailwind.config = {
     .fade-in { animation: fadeIn .5s var(--ease) both; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .tile { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
+    .tile { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease), box-shadow .4s var(--ease); transition-delay: var(--d, 0ms); }
     .tile.in { opacity: 1; transform: none; }
     .tile img { opacity: 0; transform: scale(1.08); filter: blur(10px); transition: opacity .8s var(--ease), transform 1.2s var(--ease), filter .9s var(--ease), border-radius .4s var(--ease); }
     .tile img.loaded { opacity: 1; transform: scale(1); filter: none; }
     .tile-shade { opacity: 0; transition: opacity .4s var(--ease); }
+    
     @media (hover: hover) {
+        .tile:hover { box-shadow: 0 10px 30px -10px rgba(116,144,107,0.3); }
         .tile:hover img.loaded { transform: scale(1.05); }
         .tile:hover .tile-shade { opacity: 1; }
         .tile-dl { opacity: 0; transform: translateY(8px); }
         .tile:hover .tile-dl { opacity: 1; transform: none; }
     }
+    @media (hover: none) {
+        .tile-shade { opacity: 1; }
+        .tile-dl { opacity: 1; transform: none; }
+    }
+    
     .tile-dl { transition: opacity .4s var(--ease), transform .4s var(--ease), background .3s; }
 
     .tile-check { opacity: 0; transform: scale(.5); transition: all .35s var(--ease); }
     .selecting .tile-check { opacity: 1; transform: scale(1); }
     .selecting .tile-dl, .selecting .tile-shade { display: none; }
-    .tile.selected img.loaded, .tile.selected:hover img.loaded { transform: scale(.92); border-radius: 16px; }
-    .tile.selected .tile-check { background: #A67B5B; border-color: #A67B5B; color: #fff; transform: scale(1.1); }
-    .tile.selected { background: #E5DCD0; }
+    .tile.selected img.loaded, .tile.selected:hover img.loaded { transform: scale(.92); border-radius: 12px; border: 2px solid #74906B; }
+    .tile.selected .tile-check { background: linear-gradient(to right, #74906B, #4A6444); border-color: transparent; color: #fff; transform: scale(1.1); box-shadow: 0 4px 12px rgba(116,144,107,0.4); }
+    .tile.selected { background: #E1E8D8; }
 
-    .shimmer { background: linear-gradient(100deg, #F2EBE3 30%, #F9F6F0 50%, #F2EBE3 70%); background-size: 220% 100%; animation: shimmer 1.6s linear infinite; transition: opacity .6s; }
+    .shimmer { background: linear-gradient(100deg, rgba(225,232,216,0.5) 30%, rgba(251,252,250,0.8) 50%, rgba(225,232,216,0.5) 70%); background-size: 220% 100%; animation: shimmer 1.6s linear infinite; transition: opacity .6s; }
     .shimmer.done { animation: none; opacity: 0; }
     @keyframes shimmer { to { background-position: -220% 0; } }
 
@@ -90,13 +106,14 @@ tailwind.config = {
 
     #action-bar { transform: translateY(140%); transition: transform .55s var(--ease); }
     #action-bar.show { transform: none; }
+    
     .sheet { opacity: 0; visibility: hidden; transition: opacity .35s var(--ease), visibility .35s; }
     .sheet.open { opacity: 1; visibility: visible; }
     .sheet-panel { transform: translateY(40px); transition: transform .5s var(--ease); }
     .sheet.open .sheet-panel { transform: none; }
 
-    .face-guide { border: 2px dashed rgba(255,255,255,0.7); border-radius: 40px; box-shadow: 0 0 0 9999px rgba(44,36,27,.6); animation: breathe 3s ease-in-out infinite; }
-    @keyframes breathe { 50% { transform: scale(1.03); border-color: rgba(166,123,91,1); box-shadow: 0 0 0 9999px rgba(44,36,27,.7); } }
+    .face-guide { border: 2px dashed rgba(116,144,107,0.6); border-radius: 40px; box-shadow: 0 0 0 9999px rgba(15,21,17,.7); animation: breathe 3s ease-in-out infinite; }
+    @keyframes breathe { 50% { transform: scale(1.03); border-color: rgba(116,144,107,1); box-shadow: 0 0 0 9999px rgba(15,21,17,.85); } }
 
     #toast { transition: opacity .35s var(--ease), transform .35s var(--ease); }
     #toast.hide { opacity: 0; transform: translate(-50%, 16px); pointer-events: none; }
@@ -108,297 +125,311 @@ tailwind.config = {
 </style>
 </head>
 
-<body class="font-sans bg-cream text-ink min-h-screen selection:bg-clay/20 selection:text-ink">
+<body class="font-sans">
 
-<div id="progress" class="fixed top-0 left-0 h-[3px] bg-clay z-[100] transition-all duration-500 opacity-0 rounded-r-full" style="width:0"></div>
+<div id="progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-gold-light via-gold to-gold-dark z-[100] transition-all duration-500 opacity-0 rounded-r-full shadow-[0_0_10px_rgba(116,144,107,0.8)]" style="width:0"></div>
 
 <!-- ============================== GUEST ============================== -->
 <div id="app-guest" class="min-h-screen flex flex-col relative">
 
-    <!-- Floating Nav (Modern UI) -->
-    <div class="sticky top-3 sm:top-5 z-40 mx-4 sm:mx-8 max-w-6xl xl:mx-auto">
-        <nav class="bg-white/75 backdrop-blur-xl border border-white/60 shadow-soft rounded-3xl px-5 h-16 flex items-center justify-between transition-all">
-            <button onclick="showView('view-gallery')" class="flex items-center gap-3 group">
-                <span class="w-10 h-10 rounded-2xl bg-sand/50 border border-clay/20 text-clay flex items-center justify-center group-hover:bg-clay group-hover:text-white transition-all duration-300">
-                    <i class="fa-solid fa-camera-retro text-sm"></i>
+    <!-- Floating Nav (Luxury Glass) -->
+    <div class="sticky top-2 sm:top-5 z-40 mx-2 sm:mx-8 max-w-6xl xl:mx-auto">
+        <nav class="bg-white/60 backdrop-blur-2xl border border-white shadow-soft rounded-full px-3 sm:px-5 h-14 sm:h-16 flex items-center justify-between transition-all relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-gold/5 via-transparent to-gold/5 pointer-events-none"></div>
+            <button onclick="showView('view-gallery')" class="flex items-center gap-2 sm:gap-3 group relative z-10">
+                <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-gold/10 to-gold/30 border border-gold/30 text-gold-dark flex items-center justify-center group-hover:from-gold group-hover:to-gold-dark group-hover:text-white transition-all duration-500 shadow-sm">
+                    <i class="fa-solid fa-camera-retro text-[10px] sm:text-sm"></i>
                 </span>
-                <span class="font-display text-xl sm:text-2xl font-medium tracking-wide">Toy Gallery <span class="text-clay">2000's</span></span>
+                <span class="font-display text-lg sm:text-2xl font-bold tracking-wider">
+                    Toy Gallery <span class="text-luxury ml-0.5 sm:ml-1 hidden sm:inline">2000's</span>
+                </span>
             </button>
-            <div class="flex items-center gap-2">
-                <button onclick="showView('view-gallery')" class="hidden sm:inline-flex btn-ghost border-transparent bg-transparent shadow-none hover:bg-sand/50">Gallery</button>
-                <button onclick="showView('view-scan')" class="btn-primary h-10 px-5 text-[13px]">
-                    <i class="fa-regular fa-face-smile"></i><span>Find Me</span>
+            <div class="flex items-center gap-1 sm:gap-2 relative z-10">
+                <button onclick="showView('view-gallery')" class="hidden sm:inline-flex btn-ghost border-transparent bg-transparent shadow-none hover:bg-gold/10">Gallery</button>
+                <button onclick="showView('view-scan')" class="btn-primary h-8 sm:h-10 px-3 sm:px-6 text-[12px] sm:text-[13px]">
+                    <i class="fa-regular fa-face-smile"></i><span class="hidden sm:inline">Find Me</span>
                 </button>
-                <button onclick="openAdmin()" class="btn-icon" aria-label="Admin"><i class="fa-solid fa-lock text-xs"></i></button>
+                <button onclick="openAdmin()" class="btn-icon w-8 h-8 sm:w-10 sm:h-10" aria-label="Admin"><i class="fa-solid fa-lock text-[10px] sm:text-xs"></i></button>
             </div>
         </nav>
     </div>
 
-    <main id="guest-main" class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 transition-[padding] duration-500 pb-16 mt-4">
+    <main id="guest-main" class="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-8 transition-[padding] duration-500 pb-16 mt-2 sm:mt-4">
 
         <!-- VIEW: GALLERY -->
         <section id="view-gallery" class="guest-view">
-            <header class="grid md:grid-cols-[1fr_auto] gap-10 items-end pt-10 sm:pt-16 pb-12 sm:pb-20">
-                <div class="min-w-0">
-                    <p class="rise eyebrow flex items-center gap-2" style="--d:0ms"><span class="w-6 h-[1px] bg-clay"></span> Event Gallery</p>
-                    <h1 id="album-title" class="rise mt-4 font-display text-5xl sm:text-7xl font-normal tracking-tight break-words text-ink" style="--d:80ms">Loading</h1>
-                    <div class="rise mt-6" style="--d:160ms">
-                        <p class="font-sans text-lg sm:text-xl text-muted font-light">Scan to get your photos</p>
+            <header class="grid md:grid-cols-[1fr_auto] gap-6 sm:gap-10 items-end pt-6 sm:pt-16 pb-8 sm:pb-20">
+                <div class="min-w-0 text-center sm:text-left">
+                    <p class="rise eyebrow flex items-center justify-center sm:justify-start gap-2 sm:gap-3" style="--d:0ms">
+                        <span class="w-6 sm:w-8 h-[1px] bg-gradient-to-r from-gold to-transparent hidden sm:block"></span>
+                        Event Gallery
+                    </p>
+                    <h1 id="album-title" class="rise mt-2 sm:mt-4 font-display text-4xl sm:text-7xl font-bold tracking-tight break-words text-luxury" style="--d:80ms">Loading</h1>
+                    <div class="rise mt-3 sm:mt-6" style="--d:160ms">
+                        <p class="font-sans text-sm sm:text-xl text-muted font-light">แสกนเพื่อรับรูป</p>
                     </div>
-                    <div class="rise mt-8 inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/60 border border-line/50 shadow-sm text-[13px] text-muted" style="--d:240ms">
+                    <div class="rise mt-4 sm:mt-8 inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white/50 backdrop-blur-sm border border-gold/20 shadow-sm text-[12px] sm:text-[13px] text-ink/80 mx-auto sm:mx-0" style="--d:240ms">
                         <span id="sync-dot" class="w-2 h-2 rounded-full bg-stone-300"></span>
                         <span id="status-label">Connecting…</span>
                     </div>
                 </div>
 
-                <div class="rise hidden md:block" style="--d:220ms">
-                    <div class="card p-5 w-48 text-center bg-white/90">
-                        <div class="rounded-2xl overflow-hidden border border-line/40 p-1">
+                <div class="rise hidden md:block relative group" style="--d:220ms">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-gold-light via-gold to-gold-dark rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="card p-6 w-52 text-center bg-white/90 relative">
+                        <div class="rounded-2xl overflow-hidden border border-gold/20 p-1 bg-white">
                             <img id="qr-img" alt="QR code" class="w-full h-auto aspect-square object-cover">
                         </div>
-                        <p class="mt-4 font-sans text-[11px] uppercase tracking-widest text-muted font-medium">Scan with phone</p>
+                        <p class="mt-5 font-sans text-[11px] uppercase tracking-widest text-gold-dark font-medium">Scan with phone</p>
                     </div>
                 </div>
 
-                <button onclick="shareGallery()" class="rise md:hidden btn-ghost w-full h-12 bg-white rounded-2xl" style="--d:300ms">
+                <button onclick="shareGallery()" class="rise md:hidden btn-ghost w-full h-10 sm:h-12 bg-white/60 rounded-xl sm:rounded-2xl mt-4" style="--d:300ms">
                     <i class="fa-solid fa-arrow-up-from-bracket text-sm"></i> Share this album
                 </button>
             </header>
 
             <!-- Toolbar -->
-            <div class="sticky top-[5.5rem] z-20 -mx-4 px-4 sm:-mx-8 sm:px-8 py-4 mb-6 sm:mb-8 flex items-center justify-between backdrop-blur-xl bg-cream/70 border-b border-line/40">
-                <div class="flex items-baseline gap-3">
-                    <h2 class="font-display text-2xl sm:text-3xl text-ink">All Photos</h2>
-                    <span id="photo-count" class="text-[13px] text-muted font-medium bg-sand px-2.5 py-0.5 rounded-full"></span>
+            <div class="sticky top-[4.5rem] sm:top-[5.5rem] z-20 -mx-3 sm:-mx-8 px-3 sm:px-8 py-3 sm:py-4 mb-4 sm:mb-8 flex items-center justify-between backdrop-blur-2xl bg-cream/70 border-b border-gold/10">
+                <div class="flex items-baseline gap-2 sm:gap-3">
+                    <h2 class="font-display text-xl sm:text-3xl text-ink font-bold">All Photos</h2>
+                    <span id="photo-count" class="text-[11px] sm:text-[13px] text-gold-dark font-medium bg-gold/10 border border-gold/20 px-2 sm:px-3 py-0.5 rounded-full"></span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="btn-select-all" onclick="selectAll()" class="hidden btn-ghost h-10 fade-in">Select all</button>
-                    <button id="btn-select" onclick="setSelectMode(!selecting)" class="btn-ghost h-10 bg-white" disabled>
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <button id="btn-select-all" onclick="selectAll()" class="hidden btn-ghost h-8 sm:h-10 fade-in bg-white/80 text-[12px] sm:text-[13px] px-3 sm:px-5">Select all</button>
+                    <button id="btn-select" onclick="setSelectMode(!selecting)" class="btn-ghost h-8 sm:h-10 bg-white/80 border-gold/30 text-gold-dark text-[12px] sm:text-[13px] px-3 sm:px-5" disabled>
                         <i class="fa-regular fa-square-check"></i><span>Select</span>
                     </button>
                 </div>
             </div>
 
-            <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+            <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
                 <!-- Skeletons -->
-                <div class="aspect-[4/5] rounded-2xl shimmer"></div>
-                <div class="aspect-[4/5] rounded-2xl shimmer"></div>
-                <div class="aspect-[4/5] rounded-2xl shimmer"></div>
-                <div class="aspect-[4/5] rounded-2xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl sm:rounded-2xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl sm:rounded-2xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl sm:rounded-2xl shimmer"></div>
+                <div class="aspect-[4/5] rounded-xl sm:rounded-2xl shimmer"></div>
             </div>
         </section>
 
         <!-- VIEW: FACE SCAN -->
-        <section id="view-scan" class="guest-view hidden py-8 sm:py-16">
-            <div class="max-w-2xl mx-auto card p-4 sm:p-8 bg-white/50 border-none sm:border-solid">
-                <div class="flex items-start justify-between mb-8 px-2 sm:px-0">
+        <section id="view-scan" class="guest-view hidden py-4 sm:py-16">
+            <div class="max-w-2xl mx-auto card p-4 sm:p-8 bg-white/40 border-none sm:border-solid rounded-2xl sm:rounded-[2rem]">
+                <div class="flex items-start justify-between mb-6 sm:mb-8 px-2 sm:px-0">
                     <div>
                         <p class="eyebrow rise">Face Search</p>
-                        <h1 class="rise font-display text-4xl sm:text-5xl tracking-tight mt-2 text-ink" style="--d:80ms">Find your photos</h1>
-                        <p class="rise text-[15px] text-muted mt-3 font-light" style="--d:160ms">Position your face inside the frame.</p>
+                        <h1 class="rise font-display text-3xl sm:text-5xl tracking-tight mt-1 sm:mt-2 font-bold text-luxury" style="--d:80ms">Find your photos</h1>
+                        <p class="rise text-[13px] sm:text-[15px] text-muted mt-2 sm:mt-3 font-light" style="--d:160ms">Position your face inside the golden frame.</p>
                     </div>
-                    <button onclick="showView('view-gallery')" class="btn-icon bg-white shadow-sm" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="showView('view-gallery')" class="btn-icon bg-white/80 shadow-sm border border-gold/20 w-8 h-8 sm:w-10 sm:h-10" aria-label="Close"><i class="fa-solid fa-xmark text-xs sm:text-base"></i></button>
                 </div>
-                <div class="rise relative w-full aspect-[3/4] sm:aspect-[4/3] bg-ink rounded-[2rem] overflow-hidden flex items-center justify-center shadow-lg" style="--d:200ms">
+                <div class="rise relative w-full aspect-[3/4] sm:aspect-[4/3] bg-ink rounded-2xl sm:rounded-[2rem] overflow-hidden flex items-center justify-center shadow-2xl border border-gold/20" style="--d:200ms">
                     <video id="camera" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover -scale-x-100 opacity-90"></video>
-                    <div class="face-guide relative z-10 w-56 h-72 sm:w-64 sm:h-80"></div>
-                    <div id="camera-error" class="hidden absolute inset-0 z-20 bg-ink/95 backdrop-blur-md text-cream flex-col items-center justify-center text-center p-8">
-                        <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-4 text-red-400">
-                            <i class="fa-solid fa-video-slash text-2xl"></i>
+                    <div class="face-guide relative z-10 w-48 h-64 sm:w-64 sm:h-80"></div>
+                    <div id="camera-error" class="hidden absolute inset-0 z-20 bg-ink/95 backdrop-blur-xl text-cream flex-col items-center justify-center text-center p-6 sm:p-8">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-3 sm:mb-4 text-red-400 border border-red-500/30">
+                            <i class="fa-solid fa-video-slash text-xl sm:text-2xl"></i>
                         </div>
-                        <p class="font-display text-2xl mb-2">Camera unavailable</p>
-                        <p class="text-[13px] text-cream/70 font-light max-w-xs">Please allow camera access in your browser settings to use face search.</p>
+                        <p class="font-display text-xl sm:text-2xl mb-1 sm:mb-2 font-bold">Camera unavailable</p>
+                        <p class="text-[12px] sm:text-[13px] text-cream/70 font-light max-w-[200px] sm:max-w-xs">Please allow camera access in your browser settings to use face search.</p>
                     </div>
                 </div>
-                <div class="flex justify-center mt-10">
-                    <button onclick="capture()" class="btn-primary w-full sm:w-auto h-14 px-12 text-[15px] rounded-[1.25rem]"><i class="fa-solid fa-camera"></i> Take photo</button>
+                <div class="flex justify-center mt-6 sm:mt-10">
+                    <button onclick="capture()" class="btn-primary w-full sm:w-auto h-12 sm:h-14 px-8 sm:px-12 text-[14px] sm:text-[15px] rounded-xl sm:rounded-[1.25rem] shadow-gold-glow"><i class="fa-solid fa-camera"></i> Take photo</button>
                 </div>
             </div>
         </section>
 
         <!-- VIEW: RESULT -->
-        <section id="view-result" class="guest-view hidden py-8 sm:py-16">
-            <div class="grid lg:grid-cols-[300px_1fr] gap-8 lg:gap-14">
-                <aside class="card p-8 text-center lg:sticky lg:top-32 h-max rise bg-white/80">
-                    <div class="relative w-32 h-32 mx-auto mb-6">
-                        <div class="absolute inset-0 rounded-full border-2 border-clay/30 animate-ping opacity-20"></div>
-                        <img id="profile-img" alt="" class="relative w-full h-full rounded-full object-cover bg-sand ring-4 ring-white shadow-md">
+        <section id="view-result" class="guest-view hidden py-4 sm:py-16">
+            <div class="grid lg:grid-cols-[300px_1fr] gap-6 sm:gap-8 lg:gap-14">
+                <aside class="card p-6 sm:p-8 text-center lg:sticky lg:top-32 h-max rise bg-white/60 backdrop-blur-xl border border-gold/20 rounded-2xl sm:rounded-[2rem]">
+                    <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6">
+                        <div class="absolute inset-0 rounded-full border-2 border-gold animate-ping opacity-30"></div>
+                        <img id="profile-img" alt="" class="relative w-full h-full rounded-full object-cover bg-sand ring-4 ring-white shadow-xl">
                     </div>
-                    <p class="font-display text-3xl text-ink">Search complete</p>
-                    <p class="text-[13px] text-muted mt-2 px-4 leading-relaxed font-light">Demo mode · face matching not connected</p>
-                    <button onclick="showView('view-scan')" class="btn-ghost w-full mt-8 bg-white"><i class="fa-solid fa-rotate-right"></i> Try again</button>
+                    <p class="font-display text-2xl sm:text-3xl font-bold text-luxury">Search complete</p>
+                    <p class="text-[12px] sm:text-[13px] text-muted mt-1 sm:mt-2 px-2 sm:px-4 leading-relaxed font-light">Demo mode · face matching not connected</p>
+                    <button onclick="showView('view-scan')" class="btn-ghost w-full mt-6 sm:mt-8 bg-white/80 border-gold/30 h-10 sm:h-10 text-[12px] sm:text-[13px]"><i class="fa-solid fa-rotate-right"></i> Try again</button>
                 </aside>
                 <div>
-                    <div class="flex items-end justify-between mb-8 gap-4 border-b border-line/50 pb-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-6 sm:mb-8 gap-4 border-b border-gold/20 pb-4 sm:pb-6">
                         <div>
-                            <p class="eyebrow">Results</p>
-                            <h2 class="font-display text-4xl mt-2 text-ink">Your photos</h2>
+                            <p class="eyebrow hidden sm:block">Results</p>
+                            <h2 class="font-display text-3xl sm:text-4xl mt-1 sm:mt-2 text-ink font-bold">Your photos</h2>
                         </div>
-                        <button id="btn-dl-results" onclick="downloadPhotos(resultList)" class="btn-primary h-11 px-6"><i class="fa-solid fa-arrow-down"></i> Download all</button>
+                        <button id="btn-dl-results" onclick="downloadPhotos(resultList)" class="btn-primary w-full sm:w-auto h-10 sm:h-11 px-6 text-[13px] sm:text-[14px]"><i class="fa-solid fa-arrow-down"></i> Download all</button>
                     </div>
-                    <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6"></div>
+                    <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6"></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="py-10 text-center pb-24">
-        <p class="font-display text-xl text-clay opacity-80">Toy Gallery 2000's</p>
-        <p class="font-sans text-[11px] mt-2 text-muted uppercase tracking-widest">Captured with care</p>
+    <footer class="py-8 sm:py-10 text-center pb-24 sm:pb-24 border-t border-gold/10 mt-6 sm:mt-10">
+        <p class="font-display text-lg sm:text-xl text-gold-dark font-bold tracking-wider">Toy Gallery 2000's</p>
+        <p class="font-sans text-[10px] sm:text-[11px] mt-1.5 sm:mt-2 text-muted uppercase tracking-widest">Captured with care</p>
     </footer>
 </div>
 
+<!-- BACK TO TOP BUTTON -->
+<button id="btn-back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        class="fixed bottom-6 right-4 sm:bottom-8 sm:right-6 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/80 backdrop-blur-xl border border-gold/30 text-gold-dark shadow-gold-glow flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 active:scale-95" 
+        aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up text-xs sm:text-sm"></i>
+</button>
+
 <!-- SELECTION ACTION BAR -->
-<div id="action-bar" class="fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pointer-events-none">
-    <div class="pointer-events-auto mx-auto max-w-lg bg-ink/95 backdrop-blur-lg text-cream rounded-[2rem] pl-7 pr-3 h-20 flex items-center gap-4 shadow-2xl border border-white/10">
-        <div class="flex-1 min-w-0 pt-1">
-            <p id="sel-count" class="font-display text-2xl leading-none text-white">0 selected</p>
-            <p id="sel-hint" class="text-[12px] text-cream/60 mt-1 font-light">Tap photos to select</p>
+<div id="action-bar" class="fixed inset-x-0 bottom-0 z-50 px-2 sm:px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pointer-events-none">
+    <div class="pointer-events-auto mx-auto max-w-lg bg-[#151D18]/95 backdrop-blur-xl text-cream rounded-[1.5rem] sm:rounded-[2rem] pl-5 sm:pl-7 pr-2 sm:pr-3 h-16 sm:h-20 flex items-center gap-3 sm:gap-4 shadow-2xl border border-gold/20">
+        <div class="flex-1 min-w-0 pt-0.5 sm:pt-1">
+            <p id="sel-count" class="font-display text-xl sm:text-2xl leading-none text-gold-light font-bold">0 selected</p>
+            <p id="sel-hint" class="text-[10px] sm:text-[12px] text-cream/60 mt-1 font-light hidden sm:block">Tap photos to select</p>
         </div>
-        <button onclick="clearSelection()" class="w-12 h-12 rounded-full hover:bg-white/15 transition flex items-center justify-center text-cream/80 hover:text-white" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
-        <button id="dl-btn" onclick="downloadSelected()" class="inline-flex items-center gap-2 h-14 px-7 rounded-[1.25rem] bg-white text-ink text-[14px] font-medium hover:bg-sand transition-all hover:scale-105 active:scale-95 disabled:opacity-40" disabled>
-            <i class="fa-solid fa-arrow-down text-sm"></i> Download
+        <button onclick="clearSelection()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-white/10 transition flex items-center justify-center text-cream/80 hover:text-white" aria-label="Clear"><i class="fa-solid fa-xmark text-sm sm:text-base"></i></button>
+        <button id="dl-btn" onclick="downloadSelected()" class="inline-flex items-center gap-1.5 sm:gap-2 h-12 sm:h-14 px-5 sm:px-7 rounded-xl sm:rounded-[1.25rem] bg-gradient-to-r from-[#74906B] to-[#4A6444] text-white text-[12px] sm:text-[14px] font-medium hover:from-[#65815C] hover:to-[#3C5337] transition-all hover:scale-105 active:scale-95 disabled:opacity-40 shadow-gold-glow" disabled>
+            <i class="fa-solid fa-arrow-down text-xs sm:text-sm"></i> Download
         </button>
     </div>
 </div>
 
 <!-- LIGHTBOX -->
-<div id="lightbox" class="fixed inset-0 z-[100] bg-ink/95 backdrop-blur-xl flex flex-col">
-    <div class="flex items-center justify-between px-4 sm:px-8 h-20 text-cream">
-        <span id="lb-counter" class="font-display text-xl tracking-widest text-cream/70"></span>
-        <button onclick="closeLightbox()" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+<div id="lightbox" class="fixed inset-0 z-[100] bg-[#0F1511]/95 backdrop-blur-2xl flex flex-col">
+    <div class="flex items-center justify-between px-3 sm:px-8 h-16 sm:h-20 text-cream">
+        <span id="lb-counter" class="font-display text-lg sm:text-xl tracking-widest text-gold-light ml-2"></span>
+        <button onclick="closeLightbox()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 hover:text-gold-light transition flex items-center justify-center border border-transparent hover:border-gold/30" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div id="lb-stage" class="flex-1 relative flex items-center justify-center px-4 sm:px-24 min-h-0">
-        <button onclick="stepLightbox(-1)" class="hidden sm:flex absolute left-8 w-14 h-14 rounded-full border border-white/20 hover:bg-white/20 text-cream items-center justify-center transition backdrop-blur-sm"><i class="fa-solid fa-chevron-left"></i></button>
-        <img id="lb-img" alt="" class="max-h-full max-w-full object-contain rounded-2xl shadow-2xl">
-        <button onclick="stepLightbox(1)" class="hidden sm:flex absolute right-8 w-14 h-14 rounded-full border border-white/20 hover:bg-white/20 text-cream items-center justify-center transition backdrop-blur-sm"><i class="fa-solid fa-chevron-right"></i></button>
+    <div id="lb-stage" class="flex-1 relative flex items-center justify-center px-1 sm:px-24 min-h-0">
+        <button onclick="stepLightbox(-1)" class="hidden sm:flex absolute left-8 w-14 h-14 rounded-full border border-gold/30 hover:bg-gold/20 text-gold-light items-center justify-center transition backdrop-blur-md shadow-lg"><i class="fa-solid fa-chevron-left"></i></button>
+        <img id="lb-img" alt="" class="max-h-full max-w-full object-contain rounded-lg sm:rounded-2xl shadow-2xl ring-1 ring-gold/20">
+        <button onclick="stepLightbox(1)" class="hidden sm:flex absolute right-8 w-14 h-14 rounded-full border border-gold/30 hover:bg-gold/20 text-gold-light items-center justify-center transition backdrop-blur-md shadow-lg"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
-    <div class="p-6 pb-[max(2rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-3">
-        <button id="lb-download" onclick="downloadPhotos([photos[lbIndex]])" class="inline-flex items-center justify-center gap-2 h-14 w-full sm:w-auto px-12 rounded-[1.25rem] bg-white text-ink text-[14px] font-medium hover:bg-sand transition hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg">
+    <div class="p-4 sm:p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-2 sm:gap-3">
+        <button id="lb-download" onclick="downloadPhotos([photos[lbIndex]])" class="inline-flex items-center justify-center gap-2 h-12 sm:h-14 w-full sm:w-auto px-8 sm:px-12 rounded-xl sm:rounded-[1.25rem] bg-gradient-to-r from-[#74906B] to-[#4A6444] text-white text-[13px] sm:text-[14px] font-medium hover:from-[#65815C] hover:to-[#3C5337] transition hover:scale-105 active:scale-95 disabled:opacity-50 shadow-gold-glow">
             <i class="fa-solid fa-arrow-down"></i> Download photo
         </button>
-        <p class="text-[12px] text-cream/50 font-light">If download doesn't start, long-press the photo to save it.</p>
+        <p class="text-[11px] sm:text-[12px] text-cream/50 font-light">If download doesn't start, long-press the photo to save it.</p>
     </div>
 </div>
 
 <!-- READY-TO-SAVE SHEET (mobile) -->
-<div id="ready-sheet" class="sheet fixed inset-0 z-[110] flex items-end sm:items-center justify-center bg-ink/60 backdrop-blur-md p-0 sm:p-4" onclick="if(event.target===this)closeSheet()">
-    <div class="sheet-panel w-full sm:max-w-sm bg-white rounded-t-[2.5rem] sm:rounded-[2.5rem] p-8 pb-[max(2.5rem,env(safe-area-inset-bottom))] text-center shadow-2xl">
-        <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-6">
-            <i class="fa-solid fa-check text-2xl"></i>
+<div id="ready-sheet" class="sheet fixed inset-0 z-[110] flex items-end sm:items-center justify-center bg-[#1F2A22]/70 backdrop-blur-lg p-0 sm:p-4" onclick="if(event.target===this)closeSheet()">
+    <div class="sheet-panel w-full sm:max-w-sm bg-white rounded-t-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 pb-[max(2rem,env(safe-area-inset-bottom))] text-center shadow-2xl border border-gold/20">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 text-gold-dark flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-inner">
+            <i class="fa-solid fa-check text-xl sm:text-2xl"></i>
         </div>
-        <h3 class="font-display text-4xl text-ink">Ready to save</h3>
-        <p id="ready-count" class="text-[15px] text-muted mt-2 font-light"></p>
-        <button onclick="shareReady()" class="btn-primary w-full h-14 mt-8 text-[15px] rounded-[1.25rem]"><i class="fa-solid fa-download"></i> Save to Photos</button>
-        <button onclick="closeSheet()" class="w-full h-12 mt-3 text-[14px] text-muted hover:text-ink transition font-medium">Cancel</button>
+        <h3 class="font-display text-3xl sm:text-4xl text-ink font-bold">Ready to save</h3>
+        <p id="ready-count" class="text-[14px] sm:text-[15px] text-muted mt-1 sm:mt-2 font-light"></p>
+        <button onclick="shareReady()" class="btn-primary w-full h-12 sm:h-14 mt-6 sm:mt-8 text-[14px] sm:text-[15px] rounded-xl sm:rounded-[1.25rem]"><i class="fa-solid fa-download"></i> Save to Photos</button>
+        <button onclick="closeSheet()" class="w-full h-10 sm:h-12 mt-2 sm:mt-3 text-[13px] sm:text-[14px] text-muted hover:text-gold-dark transition font-medium">Cancel</button>
     </div>
 </div>
 
 <!-- TOAST -->
-<div id="toast" class="hide fixed bottom-28 sm:bottom-24 left-1/2 -translate-x-1/2 z-[120] bg-ink/90 backdrop-blur-md text-white text-[13px] font-medium px-6 py-3.5 rounded-full shadow-xl whitespace-nowrap border border-white/10"></div>
+<div id="toast" class="hide fixed bottom-24 sm:bottom-24 left-1/2 -translate-x-1/2 z-[120] bg-[#1F2A22]/90 backdrop-blur-xl text-gold-light text-[12px] sm:text-[13px] font-medium px-5 sm:px-7 py-3 sm:py-4 rounded-full shadow-2xl whitespace-nowrap border border-gold/30"></div>
 
 <!-- ============================== ADMIN ============================== -->
 <div id="app-admin" class="hidden min-h-screen">
 
-    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-cream bg-[radial-gradient(ellipse_at_top_right,#F2EBE3,transparent_60%)]">
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#FBFCFA] via-[#F1F4EC] to-[#E1E8D8]">
         <div class="w-full max-w-sm rise">
-            <div class="text-center mb-10">
-                <div class="w-16 h-16 rounded-2xl bg-white border border-line shadow-sm text-clay flex items-center justify-center mx-auto mb-6">
-                    <i class="fa-solid fa-camera-retro text-xl"></i>
+            <div class="text-center mb-8 sm:mb-10">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/80 border border-gold/40 shadow-gold-glow text-gold-dark flex items-center justify-center mx-auto mb-4 sm:mb-6 backdrop-blur-sm">
+                    <i class="fa-solid fa-camera-retro text-lg sm:text-xl"></i>
                 </div>
-                <h1 class="font-display text-5xl text-ink mb-2">Welcome</h1>
-                <p class="text-[15px] text-muted font-light">Sign in to manage galleries</p>
+                <h1 class="font-display text-4xl sm:text-5xl font-bold text-luxury mb-1 sm:mb-2">Welcome</h1>
+                <p class="text-[14px] sm:text-[15px] text-muted font-light">Sign in to manage galleries</p>
             </div>
-            <form id="login-form" class="card p-8 space-y-5 bg-white/90" novalidate>
+            <form id="login-form" class="card p-6 sm:p-8 space-y-4 sm:space-y-5" novalidate>
                 <div>
                     <label for="login-email" class="label">Email address</label>
-                    <input id="login-email" type="email" autocomplete="username" placeholder="admin@toygallery.com" class="input bg-cream/50">
+                    <input id="login-email" type="email" autocomplete="username" placeholder="admin@toygallery.com" class="input bg-white/50">
                 </div>
                 <div>
                     <label for="login-password" class="label">Password</label>
                     <div class="relative">
-                        <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" class="input bg-cream/50 pr-12">
-                        <button type="button" onclick="togglePassword()" class="absolute right-2 top-1/2 -translate-y-1/2 btn-icon w-10 h-10 hover:bg-transparent" aria-label="Show password"><i id="pw-eye" class="fa-regular fa-eye text-muted"></i></button>
+                        <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" class="input bg-white/50 pr-12">
+                        <button type="button" onclick="togglePassword()" class="absolute right-2 top-1/2 -translate-y-1/2 btn-icon w-10 h-10 hover:bg-transparent" aria-label="Show password"><i id="pw-eye" class="fa-regular fa-eye text-gold-dark"></i></button>
                     </div>
                 </div>
-                <p id="login-error" class="hidden text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3 font-medium"></p>
+                <p id="login-error" class="hidden text-[12px] sm:text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3 font-medium"></p>
                 <div class="pt-2">
-                    <button id="login-btn" type="submit" class="btn-primary w-full h-12 text-[15px] rounded-[1.25rem]">Sign in</button>
+                    <button id="login-btn" type="submit" class="btn-primary w-full h-11 sm:h-12 text-[14px] sm:text-[15px] rounded-xl sm:rounded-[1.25rem]">Sign in</button>
                 </div>
             </form>
-            <button onclick="exitAdmin()" class="w-full mt-8 text-[14px] text-muted hover:text-ink transition flex items-center justify-center gap-2 font-medium">
-                <i class="fa-solid fa-arrow-left text-xs"></i> Back to gallery
+            <button onclick="exitAdmin()" class="w-full mt-6 sm:mt-8 text-[13px] sm:text-[14px] text-muted hover:text-gold-dark transition flex items-center justify-center gap-2 font-medium">
+                <i class="fa-solid fa-arrow-left text-[10px] sm:text-xs"></i> Back to gallery
             </button>
         </div>
     </div>
 
-    <div id="admin-shell" class="hidden min-h-screen md:flex bg-sand/30">
-        <!-- Sidebar -->
-        <aside class="hidden md:flex w-72 shrink-0 flex-col bg-white border-r border-line/60 h-screen sticky top-0 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.02)]">
-            <div class="h-20 px-8 flex items-center gap-4 border-b border-line/40">
-                <span class="w-10 h-10 rounded-xl bg-sand/50 text-clay flex items-center justify-center"><i class="fa-solid fa-camera-retro"></i></span>
-                <span class="font-display text-2xl text-ink">Toy Gallery</span>
+    <div id="admin-shell" class="hidden min-h-screen md:flex flex-col md:flex-row bg-gradient-to-br from-[#FBFCFA] to-[#F1F4EC]">
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex w-72 shrink-0 flex-col bg-white/80 backdrop-blur-xl border-r border-gold/20 h-screen sticky top-0 shadow-lg">
+            <div class="h-20 px-8 flex items-center gap-4 border-b border-gold/20">
+                <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold/10 to-gold/30 border border-gold/30 text-gold-dark flex items-center justify-center"><i class="fa-solid fa-camera-retro"></i></span>
+                <span class="font-display text-2xl font-bold text-luxury">Toy Gallery</span>
             </div>
             <nav class="flex-1 p-4 space-y-1.5 mt-2">
-                <p class="eyebrow px-4 pt-2 pb-3 opacity-70">Management</p>
+                <p class="eyebrow px-4 pt-2 pb-3 opacity-80">Management</p>
                 <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab w-full"><i class="fa-solid fa-chart-simple w-5"></i> Overview</button>
                 <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab w-full"><i class="fa-regular fa-folder w-5"></i> Albums</button>
             </nav>
-            <div class="p-4 border-t border-line/40 space-y-1.5 bg-sand/20">
+            <div class="p-4 border-t border-gold/20 space-y-1.5 bg-white/50">
                 <p id="admin-email" class="px-4 py-3 text-[12px] font-mono text-muted truncate"></p>
-                <button onclick="exitAdmin()" class="admin-tab w-full bg-white"><i class="fa-solid fa-globe w-5"></i> View gallery</button>
-                <button onclick="logout()" class="admin-tab w-full bg-white hover:text-red-600"><i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Sign out</button>
+                <button onclick="exitAdmin()" class="admin-tab w-full bg-white/80 border border-gold/10 hover:border-gold/30"><i class="fa-solid fa-globe w-5"></i> View gallery</button>
+                <button onclick="logout()" class="admin-tab w-full bg-white/80 hover:text-red-600"><i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Sign out</button>
             </div>
         </aside>
 
         <div class="flex-1 min-w-0">
             <!-- Mobile Header -->
-            <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-line/50 md:hidden">
-                <div class="h-16 px-5 flex items-center justify-between">
-                    <h2 id="admin-title-mobile" class="font-display text-2xl text-ink">Albums</h2>
+            <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-2xl border-b border-gold/20 md:hidden shadow-sm">
+                <div class="h-14 sm:h-16 px-4 sm:px-5 flex items-center justify-between">
+                    <h2 id="admin-title-mobile" class="font-display text-xl sm:text-2xl font-bold text-luxury">Albums</h2>
                     <div class="flex items-center gap-1">
-                        <button onclick="exitAdmin()" class="btn-icon bg-sand/50"><i class="fa-solid fa-globe"></i></button>
-                        <button onclick="logout()" class="btn-icon bg-sand/50"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                        <button onclick="exitAdmin()" class="btn-icon w-8 h-8 sm:w-10 sm:h-10 bg-gold/10 border border-gold/20 text-gold-dark"><i class="fa-solid fa-globe text-xs sm:text-base"></i></button>
+                        <button onclick="logout()" class="btn-icon w-8 h-8 sm:w-10 sm:h-10 bg-gold/10 border border-gold/20 text-gold-dark"><i class="fa-solid fa-arrow-right-from-bracket text-xs sm:text-base"></i></button>
                     </div>
                 </div>
-                <nav class="flex gap-2 px-5 pb-4 overflow-x-auto no-scrollbar">
-                    <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab bg-sand/30"><i class="fa-solid fa-chart-simple"></i> Overview</button>
-                    <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab bg-sand/30"><i class="fa-regular fa-folder"></i> Albums</button>
+                <nav class="flex gap-2 px-4 sm:px-5 pb-3 sm:pb-4 overflow-x-auto no-scrollbar">
+                    <button data-tab="dashboard" onclick="switchTab('dashboard')" class="admin-tab bg-white/60 border border-gold/10 h-8 sm:h-11 px-3 sm:px-4 text-[12px] sm:text-[14px]"><i class="fa-solid fa-chart-simple"></i> Overview</button>
+                    <button data-tab="albums" onclick="switchTab('albums')" class="admin-tab bg-white/60 border border-gold/10 h-8 sm:h-11 px-3 sm:px-4 text-[12px] sm:text-[14px]"><i class="fa-regular fa-folder"></i> Albums</button>
                 </nav>
             </header>
 
-            <main class="p-5 sm:p-10 max-w-5xl mx-auto">
-                <h2 id="admin-title" class="hidden md:block font-display text-4xl text-ink mb-8 mt-2">Albums</h2>
+            <main class="p-4 sm:p-5 md:p-10 max-w-5xl mx-auto">
+                <h2 id="admin-title" class="hidden md:block font-display text-4xl font-bold text-luxury mb-8 mt-2">Albums</h2>
                 
-                <section id="tab-dashboard" class="admin-section hidden space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
-                        <div class="card p-7 rise bg-white"><p class="eyebrow">Total Albums</p><p id="stat-albums" class="font-display text-6xl mt-4 text-ink">0</p></div>
-                        <div class="card p-7 rise bg-white" style="--d:80ms"><p class="eyebrow">Photos live</p><p id="stat-photos" class="font-display text-6xl mt-4 text-ink">–</p></div>
-                        <div class="card p-7 min-w-0 rise bg-clay text-white border-none shadow-float" style="--d:160ms">
-                            <p class="text-[11px] uppercase tracking-[0.25em] font-medium text-white/70">Live album</p>
-                            <p id="stat-active" class="font-display text-3xl mt-5 truncate leading-tight">–</p>
+                <section id="tab-dashboard" class="admin-section hidden space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="card p-5 sm:p-7 rise"><p class="eyebrow">Total Albums</p><p id="stat-albums" class="font-display text-4xl sm:text-6xl font-bold mt-2 sm:mt-4 text-ink">0</p></div>
+                        <div class="card p-5 sm:p-7 rise" style="--d:80ms"><p class="eyebrow">Photos live</p><p id="stat-photos" class="font-display text-4xl sm:text-6xl font-bold mt-2 sm:mt-4 text-ink">–</p></div>
+                        <div class="card p-5 sm:p-7 min-w-0 rise bg-gradient-to-br from-[#74906B] to-[#4A6444] text-white border-none shadow-gold-glow" style="--d:160ms">
+                            <p class="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-medium text-white/80">Live album</p>
+                            <p id="stat-active" class="font-display text-2xl sm:text-3xl font-bold mt-2 sm:mt-5 truncate leading-tight text-white">–</p>
                         </div>
                     </div>
-                    <p id="stat-sync" class="text-[13px] text-muted px-2 font-medium"></p>
+                    <p id="stat-sync" class="text-[11px] sm:text-[13px] text-muted px-2 font-medium"></p>
                 </section>
 
-                <section id="tab-albums" class="admin-section hidden space-y-8">
-                    <div class="card p-7 sm:p-8 rise bg-white">
-                        <h3 class="font-display text-3xl text-ink">Add Drive folder</h3>
-                        <p class="text-[14px] text-muted mt-2 mb-6 font-light max-w-2xl">Paste the full folder link or folder ID. New folders go live immediately and replace the current album. Make sure it's shared as "Anyone with the link".</p>
-                        <form id="album-form" class="grid sm:grid-cols-[1fr_1.2fr_auto] gap-4 items-start" novalidate>
-                            <input id="album-name" type="text" placeholder="Album name" class="input">
-                            <input id="album-folder" type="text" placeholder="Folder link or ID" class="input font-mono text-[13px] bg-sand/20">
-                            <button type="submit" class="btn-primary h-12 px-8 rounded-[1.25rem]"><i class="fa-solid fa-plus text-sm"></i> Add Album</button>
+                <section id="tab-albums" class="admin-section hidden space-y-4 sm:space-y-8">
+                    <div class="card p-5 sm:p-7 md:p-8 rise bg-white/80">
+                        <h3 class="font-display text-2xl sm:text-3xl font-bold text-luxury">Add Drive folder</h3>
+                        <p class="text-[13px] sm:text-[14px] text-muted mt-1 sm:mt-2 mb-4 sm:mb-6 font-light max-w-2xl">Paste the full folder link or folder ID. New folders go live immediately and replace the current album. Make sure it's shared as "Anyone with the link".</p>
+                        <form id="album-form" class="grid sm:grid-cols-[1fr_1.2fr_auto] gap-3 sm:gap-4 items-start" novalidate>
+                            <input id="album-name" type="text" placeholder="Album name" class="input bg-white h-10 sm:h-12 text-[13px] sm:text-sm">
+                            <input id="album-folder" type="text" placeholder="Folder link or ID" class="input font-mono text-[11px] sm:text-[13px] bg-sand/30 h-10 sm:h-12">
+                            <button type="submit" class="btn-primary h-10 sm:h-12 px-6 sm:px-8 rounded-xl sm:rounded-[1.25rem] w-full sm:w-auto"><i class="fa-solid fa-plus text-xs sm:text-sm"></i> Add Album</button>
                         </form>
                     </div>
                     
-                    <div class="card overflow-hidden rise bg-white" style="--d:80ms">
-                        <div class="px-7 sm:px-8 py-5 border-b border-line/50 flex items-center justify-between bg-sand/10">
-                            <h3 class="font-display text-2xl text-ink">All albums</h3>
-                            <span class="text-[12px] font-medium text-muted bg-sand px-3 py-1 rounded-full">One live at a time</span>
+                    <div class="card overflow-hidden rise bg-white/80" style="--d:80ms">
+                        <div class="px-5 sm:px-7 md:px-8 py-3 sm:py-5 border-b border-gold/20 flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gold/5 gap-2 sm:gap-0">
+                            <h3 class="font-display text-xl sm:text-2xl font-bold text-ink">All albums</h3>
+                            <span class="text-[10px] sm:text-[12px] font-medium text-gold-dark border border-gold/30 bg-white/60 backdrop-blur px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">One live at a time</span>
                         </div>
-                        <div id="album-list" class="divide-y divide-line/40"></div>
+                        <div id="album-list" class="divide-y divide-gold/10"></div>
                     </div>
                 </section>
             </main>
@@ -412,8 +443,9 @@ tailwind.config = {
 const CONFIG = {
     GAS_API_URL: "https://script.google.com/macros/s/AKfycbyBLpMDiIIQ0PO7uqj0kK8HdHkLwCshrBQWHaCYqM9vLbFbTzUPiXeEVYlEX-J9V2ZKBQ/exec",
     REFRESH_MS: 5000,
-    SESSION_HOURS: 8,
-    DOWNLOAD_CONCURRENCY: 4,
+    SESSION_HOURS: 10,
+    DOWNLOAD_CONCURRENCY: 10,
+    MAX_DOWNLOAD_WIDTH: 2048,
     DEFAULT_ALBUM: { name: "Toy Gallery 2000's", folderId: "" },
     FIREBASE_CONFIG: {
          apiKey: "AIzaSyC74s9gciHx68bAPNDue25wMCAhLiau8C0",
@@ -426,7 +458,7 @@ const CONFIG = {
          measurementId: "G-S7JX8BPJS6"
     },
     ADMIN_ACCOUNTS: [
-        { email: "admin@toygallery.com", passwordHash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" } // demo pw: admin
+        { email: "admin@toygallery.com", passwordHash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" }
     ]
 };
 
@@ -459,6 +491,20 @@ function toast(msg) {
     toastTimer = setTimeout(() => t.classList.add('hide'), 2600);
 }
 
+// Event listener สำหรับ Back to top button
+window.addEventListener('scroll', () => {
+    const btn = $('btn-back-to-top');
+    if (btn) {
+        if (window.scrollY > 300) {
+            btn.classList.remove('opacity-0', 'pointer-events-none');
+            btn.classList.add('opacity-100', 'pointer-events-auto');
+        } else {
+            btn.classList.add('opacity-0', 'pointer-events-none');
+            btn.classList.remove('opacity-100', 'pointer-events-auto');
+        }
+    }
+});
+
 /* -------------------- STATE -------------------- */
 let albums = [];
 let photos = [];
@@ -477,7 +523,7 @@ const selected = new Set();
 const revealed = new Set();
 const loadedSet = new Set();
 const DEFAULT_LABELS = {};
-const SKELETON = '<div class="aspect-[4/5] rounded-2xl shimmer"></div>'.repeat(4);
+const SKELETON = '<div class="aspect-[4/5] rounded-xl sm:rounded-2xl shimmer"></div>'.repeat(4);
 
 // Sync Firebase Data
 function initFirebaseRealtimeSync() {
@@ -488,15 +534,21 @@ function initFirebaseRealtimeSync() {
     db.ref('albums').on('value', snapshot => {
         const data = snapshot.val();
         if (data) {
-            albums = Array.isArray(data) ? data : Object.values(data);
+            albums = Array.isArray(data) ? data.filter(Boolean) : Object.values(data);
         } else {
             const d = CONFIG.DEFAULT_ALBUM;
             albums = d && d.folderId ? [{ id: 1, name: d.name, folderId: d.folderId, isActive: true }] : [];
         }
         resetGallery();
         if (!$('app-admin').classList.contains('hidden')) renderAlbums();
+    }, err => {
+        console.error(err);
+        toast('Firebase: ' + err.message);
+        albums = loadLocalAlbums();
+        resetGallery();
     });
 }
+
 
 function loadLocalAlbums() {
     let list = null;
@@ -520,7 +572,10 @@ function loadLocalAlbums() {
 
 function saveAlbums() {
     if (db) {
-        db.ref('albums').set(albums);
+        db.ref('albums').set(albums).catch(e => {
+            console.error(e);
+            toast('Sync failed: ' + e.message);
+        });
     } else {
         localStorage.setItem('tg_albums', JSON.stringify(albums));
     }
@@ -567,7 +622,7 @@ function renderHeader() {
 
 function setStatus(text, state) {
     $('status-label').textContent = text;
-    const colors = { live: 'bg-emerald-500 animate-pulse', error: 'bg-red-500', idle: 'bg-clay-light' };
+    const colors = { live: 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]', error: 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]', idle: 'bg-[#B58945]' };
     $('sync-dot').className = `w-2 h-2 rounded-full ${colors[state] || colors.idle}`;
 }
 
@@ -658,17 +713,17 @@ function tileHTML(p, i, delay) {
     const k = keyOf(p);
     const seen = revealed.has(k), loaded = loadedSet.has(k);
     return `
-    <figure class="tile ${seen ? 'in' : ''} ${selected.has(k) ? 'selected' : ''} group relative aspect-[4/5] overflow-hidden rounded-2xl bg-sand/50 cursor-pointer select-none"
+    <figure class="tile ${seen ? 'in' : ''} ${selected.has(k) ? 'selected' : ''} group relative aspect-[4/5] overflow-hidden rounded-xl sm:rounded-2xl bg-white border border-gold/10 cursor-pointer select-none"
             data-key="${esc(k)}" data-i="${i}" style="--d:${delay}ms">
         <div class="shimmer absolute inset-0 ${loaded ? 'done' : ''}"></div>
         <img src="${esc(p.thumb || p.url)}" alt="Photo ${i + 1}" loading="lazy" decoding="async" draggable="false"
              onload="imgLoaded(this)" class="${loaded ? 'loaded' : ''} absolute inset-0 w-full h-full object-cover">
-        <div class="tile-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent"></div>
-        <button data-action="download" class="tile-dl absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur text-ink flex items-center justify-center shadow-md hover:bg-white hover:scale-110 active:scale-95 transition-all" aria-label="Download">
-            <i class="fa-solid fa-arrow-down text-[13px]"></i>
+        <div class="tile-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent"></div>
+        <button data-action="download" class="tile-dl absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur text-gold-dark flex items-center justify-center shadow-lg hover:bg-white hover:scale-110 active:scale-95 hover:text-[#8B652A] transition-all border border-gold/20" aria-label="Download">
+            <i class="fa-solid fa-arrow-down text-[10px] sm:text-[13px]"></i>
         </button>
-        <span class="tile-check absolute top-3 left-3 w-7 h-7 rounded-full border-2 border-white/90 bg-ink/20 backdrop-blur text-transparent flex items-center justify-center shadow-md">
-            <i class="fa-solid fa-check text-[11px]"></i>
+        <span class="tile-check absolute top-2 left-2 sm:top-3 sm:left-3 w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white/90 bg-ink/30 backdrop-blur text-transparent flex items-center justify-center shadow-md">
+            <i class="fa-solid fa-check text-[9px] sm:text-[11px]"></i>
         </span>
     </figure>`;
 }
@@ -693,10 +748,10 @@ function renderGallery() {
     if (!photos.length) {
         const live = activeAlbum();
         grid.innerHTML = `
-            <div class="col-span-full py-32 text-center fade-in bg-white/50 rounded-3xl border border-line/50 mt-4">
-                <i class="fa-regular fa-image text-4xl text-clay/40 mb-4"></i>
-                <p class="font-display text-4xl text-clay">${live ? 'No photos yet' : 'No live album'}</p>
-                <p class="text-[15px] text-muted mt-3 font-light">${live ? 'New photos will appear here automatically.' : 'Please set an album live from the admin panel.'}</p>
+            <div class="col-span-full py-20 sm:py-32 text-center fade-in bg-white/40 backdrop-blur-sm rounded-[1.5rem] sm:rounded-[2rem] border border-gold/20 mt-4 shadow-sm mx-2 sm:mx-0">
+                <i class="fa-regular fa-image text-3xl sm:text-4xl text-gold-light mb-3 sm:mb-4 drop-shadow-md"></i>
+                <p class="font-display text-2xl sm:text-4xl font-bold text-luxury">${live ? 'No photos yet' : 'No live album'}</p>
+                <p class="text-[13px] sm:text-[15px] text-muted mt-2 sm:mt-3 font-light px-4">${live ? 'New photos will appear here automatically.' : 'Please set an album live from the admin panel.'}</p>
             </div>`;
         return;
     }
@@ -732,7 +787,7 @@ function setSelectMode(on) {
     if (!on) selected.clear();
     $('gallery-grid').classList.toggle('selecting', on);
     $('gallery-grid').querySelectorAll('.tile').forEach(t => t.classList.toggle('selected', selected.has(t.dataset.key)));
-    $('btn-select').innerHTML = on ? '<span>Cancel</span>' : '<i class="fa-regular fa-square-check text-sm"></i><span>Select</span>';
+    $('btn-select').innerHTML = on ? '<span>Cancel</span>' : '<i class="fa-regular fa-square-check text-sm"></i><span class="hidden sm:inline">Select</span>';
     $('btn-select-all').classList.toggle('hidden', !on);
     updateSelectionUI();
 }
@@ -762,7 +817,7 @@ function updateSelectionUI() {
     $('dl-btn').disabled = !n || busy;
     $('btn-select-all').textContent = n && n === photos.length ? 'Deselect all' : 'Select all';
     $('action-bar').classList.toggle('show', selecting);
-    $('guest-main').classList.toggle('pb-32', selecting);
+    $('guest-main').classList.toggle('pb-24', selecting);
 }
 
 async function downloadSelected() {
@@ -779,15 +834,23 @@ async function photoToFile(p, idx) {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         blob = await r.blob();
     } else {
-        const a = activeAlbum();
-        if (!a) throw new Error('No live album');
-        const r = await fetch(`${CONFIG.GAS_API_URL}?action=file&folderId=${encodeURIComponent(a.folderId)}&id=${encodeURIComponent(p.id)}`);
-        const j = await r.json();
-        if (!j.success) throw new Error(j.message || 'File error');
-        const bin = atob(j.data);
-        const bytes = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-        blob = new Blob([bytes], { type: j.mimeType || 'image/jpeg' });
+        try {
+            const maxW = CONFIG.MAX_DOWNLOAD_WIDTH || 2048;
+            const r = await fetch(`https://lh3.googleusercontent.com/d/${p.id}=w${maxW}`);
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            blob = await r.blob();
+            if (!blob.type.startsWith('image/')) throw new Error('Not an image');
+        } catch (cdnErr) {
+            const a = activeAlbum();
+            if (!a) throw new Error('No live album');
+            const r = await fetch(`${CONFIG.GAS_API_URL}?action=file&folderId=${encodeURIComponent(a.folderId)}&id=${encodeURIComponent(p.id)}`);
+            const j = await r.json();
+            if (!j.success) throw new Error(j.message || 'File error');
+            const bin = atob(j.data);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            blob = new Blob([bytes], { type: j.mimeType || 'image/jpeg' });
+        }
     }
     const type = blob.type || 'image/jpeg';
     const ext = (type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
@@ -840,7 +903,7 @@ function setProgress(done, total, label) {
     bar.style.opacity = 1;
     bar.style.width = `${Math.max(4, (done / total) * 100)}%`;
     const text = label || (total > 1 ? `Preparing ${done}/${total}` : 'Preparing…');
-    btns.forEach(id => { $(id).innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-sm"></i> ${text}`; $(id).disabled = true; });
+    btns.forEach(id => { $(id).innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-sm"></i> <span class="hidden sm:inline">${text}</span>`; $(id).disabled = true; });
 }
 
 async function downloadPhotos(list) {
@@ -980,7 +1043,7 @@ function renderResults() {
     const grid = $('result-grid');
     grid.innerHTML = resultList.length
         ? resultList.map((p, i) => tileHTML(p, i, i * 80)).join('')
-        : `<p class="col-span-full font-display italic text-3xl text-clay py-20 text-center">No matching photos found.</p>`;
+        : `<p class="col-span-full font-display italic text-2xl sm:text-3xl text-gold-dark py-12 sm:py-20 text-center">No matching photos found.</p>`;
     grid.querySelectorAll('.tile').forEach(t => t.classList.remove('in'));
     observeTiles(grid);
 }
@@ -1036,7 +1099,7 @@ function togglePassword() {
     const input = $('login-password');
     const show = input.type === 'password';
     input.type = show ? 'text' : 'password';
-    $('pw-eye').className = `fa-regular ${show ? 'fa-eye-slash' : 'fa-eye'} text-muted`;
+    $('pw-eye').className = `fa-regular ${show ? 'fa-eye-slash' : 'fa-eye'} text-gold-dark`;
 }
 function logout() { sessionStorage.removeItem('tg_session'); showLogin(); toast('Signed out'); }
 
@@ -1070,7 +1133,7 @@ function showAdminShell() {
 function switchTab(tab) {
     document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
     $(`tab-${tab}`).classList.remove('hidden');
-    document.querySelectorAll('.admin-tab[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.admin-tab[data-tab]').forEach(b => b.dataset.tab === tab ? b.classList.add('active') : b.classList.remove('active'));
     $('admin-title').textContent = tab === 'dashboard' ? 'Overview' : 'Albums';
     $('admin-title-mobile').textContent = tab === 'dashboard' ? 'Overview' : 'Albums';
     if (tab === 'dashboard') fetchPhotos().then(renderStats);
@@ -1120,21 +1183,21 @@ function deleteAlbum(id) {
 function renderAlbums() {
     $('album-list').innerHTML = albums.length
         ? albums.map(a => `
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-7 sm:px-8 py-6 ${a.isActive ? 'bg-sand/30' : ''} transition-colors hover:bg-sand/20">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-5 sm:px-7 md:px-8 py-4 sm:py-6 ${a.isActive ? 'bg-gold/5' : ''} transition-colors hover:bg-gold/10">
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-3">
-                        <p class="font-display text-2xl truncate text-ink">${esc(a.name)}</p>
-                        ${a.isActive ? '<span class="shrink-0 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] bg-clay text-white px-3 py-1 rounded-full font-medium shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-white/90 animate-pulse"></span>Live</span>' : ''}
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <p class="font-display text-lg sm:text-2xl truncate text-ink font-bold">${esc(a.name)}</p>
+                        ${a.isActive ? '<span class="shrink-0 inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] bg-gradient-to-r from-gold to-gold-dark text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-white/90 animate-pulse"></span>Live</span>' : ''}
                     </div>
-                    <p class="font-mono text-[12px] text-muted truncate mt-1.5 opacity-80">${esc(a.folderId)}</p>
+                    <p class="font-mono text-[10px] sm:text-[12px] text-muted truncate mt-1 sm:mt-1.5 opacity-80">${esc(a.folderId)}</p>
                 </div>
-                <div class="flex gap-2.5 shrink-0">
-                    ${a.isActive ? '' : `<button onclick="setActiveAlbum(${a.id})" class="btn-ghost h-10 flex-1 sm:flex-none">Set live</button>`}
-                    <a href="https://drive.google.com/drive/folders/${encodeURIComponent(a.folderId)}" target="_blank" rel="noopener" class="btn-ghost h-10 w-10 px-0" aria-label="Open in Drive"><i class="fa-brands fa-google-drive"></i></a>
-                    <button onclick="deleteAlbum(${a.id})" class="btn-ghost h-10 w-10 px-0 text-red-600 hover:bg-red-50 hover:border-red-200" aria-label="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                <div class="flex gap-2 shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                    ${a.isActive ? '' : `<button onclick="setActiveAlbum(${a.id})" class="btn-ghost h-9 sm:h-10 flex-1 sm:flex-none border-gold/20 text-gold-dark text-[12px] sm:text-[13px]">Set live</button>`}
+                    <a href="https://drive.google.com/drive/folders/${encodeURIComponent(a.folderId)}" target="_blank" rel="noopener" class="btn-ghost h-9 w-9 sm:h-10 sm:w-10 px-0 border-gold/20 text-gold-dark" aria-label="Open in Drive"><i class="fa-brands fa-google-drive text-xs sm:text-base"></i></a>
+                    <button onclick="deleteAlbum(${a.id})" class="btn-ghost h-9 w-9 sm:h-10 sm:w-10 px-0 text-red-500 border-red-100 hover:bg-red-50 hover:border-red-200" aria-label="Delete"><i class="fa-regular fa-trash-can text-xs sm:text-base"></i></button>
                 </div>
             </div>`).join('')
-        : `<div class="px-8 py-20 text-center"><i class="fa-regular fa-folder-open text-4xl text-clay/40 mb-4"></i><p class="font-display italic text-2xl text-muted">No albums yet. Add your first folder above.</p></div>`;
+        : `<div class="px-5 sm:px-8 py-12 sm:py-20 text-center"><i class="fa-regular fa-folder-open text-3xl sm:text-4xl text-gold/40 mb-3 sm:mb-4 drop-shadow-sm"></i><p class="font-display italic text-xl sm:text-2xl text-muted font-bold">No albums yet. Add your first folder above.</p></div>`;
     renderStats();
 }
 
